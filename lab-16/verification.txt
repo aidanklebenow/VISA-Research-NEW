@@ -1,0 +1,47 @@
+Decision date: 2026-03-31
+Input rows: 12
+Quarantined: no ticker: removed 1; rows 11
+Exact duplicate: removed 1; rows 7
+Published after decision date: removed 3; rows 3, 8, 10
+Older vintage replaced by a revision: removed 1; rows 2
+
+As-of panel: 6 rows
+Row | Ticker | Month measured | Published on | Index
+1 | AAA | 2026-01 | 2026-02-10 | 101.0
+4 | AAA | 2026-02 | 2026-03-25 | 103.0
+5 | BBB | 2026-01 | 2026-02-10 | 98.0
+6 | BBB | 2026-02 | 2026-03-10 | 97.0
+9 | CCC | 2026-01 | 2026-02-10 | 110.0
+12 | CCC | 2026-02 | 2026-03-10 | 111.0
+
+Ticker | As-of signal | Naive signal (ignores publication cutoff)
+AAA | +1.98% (2026-02) | +5.83% (2026-03)
+BBB | -1.02% (2026-02) | -5.15% (2026-03)
+CCC | +0.91% (2026-02) | +1.82% (2026-02)
+
+AI-assisted technical verification: known-answer assertions PASS.
+Decision date: 2026-04-15
+Input rows: 12
+Quarantined: no ticker: removed 1; rows 11
+Exact duplicate: removed 1; rows 7
+Published after decision date: removed 0; rows none
+Older vintage replaced by a revision: removed 2; rows 2, 12
+
+As-of panel: 8 rows
+Row | Ticker | Month measured | Published on | Index
+1 | AAA | 2026-01 | 2026-02-10 | 101.0
+3 | AAA | 2026-03 | 2026-04-10 | 109.0
+4 | AAA | 2026-02 | 2026-03-25 | 103.0
+5 | BBB | 2026-01 | 2026-02-10 | 98.0
+6 | BBB | 2026-02 | 2026-03-10 | 97.0
+8 | BBB | 2026-03 | 2026-04-10 | 92.0
+9 | CCC | 2026-01 | 2026-02-10 | 110.0
+10 | CCC | 2026-02 | 2026-04-05 | 112.0
+
+Ticker | As-of signal | Naive signal (ignores publication cutoff)
+AAA | +5.83% (2026-03) | +5.83% (2026-03)
+BBB | -5.15% (2026-03) | -5.15% (2026-03)
+CCC | +1.82% (2026-02) | +1.82% (2026-02)
+
+AI-assisted technical verification: April 15 as-of equals naive PASS.
+Source file default remains March 31. Partner exercise still pending.
