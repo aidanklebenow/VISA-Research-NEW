@@ -71,9 +71,9 @@ AI compared these downloaded observations with the visible FRED page on October 
 
 **Actual partner challenge and no-AI code explanation: pending.** No partner participation is claimed.
 
-Prepared self-check challenge: “Why trust the revisions field if the app reports zero?”
+**AI-assisted review — field challenged: revisions.** “Does zero revisions mean CPI is never revised?”
 
-Prepared response: The app reports zero changed shared values between September 30 and October 29, 2026, while September is an additional observation rather than a revision. BLS describes annual seasonal-factor updates, so eligibility must rely on historical vintages even when this particular comparison shows no revisions.
+**Two-sentence answer:** Zero means no shared values changed between the September 30 and October 29, 2026 snapshots; September CPI is a newly available observation, not a revision. BLS documents annual seasonal-factor updates, so Project 2 still needs historical vintages to avoid using later revisions.
 
 This is an AI-prepared self-check, not a substitute for the required real partner attack. Record the partner's actual question and an evidence-based two-sentence answer after the exercise.
 
@@ -85,7 +85,13 @@ For an inflation feature, calculate `100 * (CPI_t / CPI_(t-12) - 1)` using both 
 
 ## Understand and explain the code
 
-`download_asof()` validates the series ID, parses the requested date, and rejects a future date. It places that date in ALFRED's `vintage_date` query, which requests the historical information set. `download()` checks the HTTP response, parses the two CSV columns, converts dates/numbers, removes missing observations, and returns sorted values plus a UTC retrieval timestamp. The final date guard excludes future-dated observations; it is the ALFRED request, not that guard, that enforces historical publication eligibility. The decorator caches separately for each series/date argument.
+AI-assisted explanation of `download_asof()`, in code order:
+
+1. `@st.cache_data(...)` reuses each series/date download for up to one hour.
+2. `validate_id(series_id)` checks the series code; `date.fromisoformat(...)` parses the requested date.
+3. The `if` statement rejects dates in the future.
+4. `download(...)` requests ALFRED's `vintage_date`, reads the historical CSV, handles missing values, and records retrieval time.
+5. `return values.loc[...]` excludes future-dated observations and returns the data plus timestamp. ALFRED's vintage selection is what prevents later publications and revisions from leaking in.
 
 Practice question: Why is filtering today's CSV to observation dates before the trade insufficient? Because an old observation date can carry a value published or revised after the trade; only the historical vintage addresses that leak.
 
