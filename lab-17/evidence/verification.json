@@ -1,0 +1,115 @@
+{
+  "run_utc": "2026-10-29T21:02:11.536672+00:00",
+  "errors": [],
+  "benchmark": [
+    {
+      "series": "BAA",
+      "expected_date": "2026-09-01",
+      "expected_value": 6.47,
+      "actual_date": "2026-09-01",
+      "actual_value": 6.47,
+      "passed": true
+    },
+    {
+      "series": "FEDFUNDS",
+      "expected_date": "2026-09-01",
+      "expected_value": 3.75,
+      "actual_date": "2026-09-01",
+      "actual_value": 3.75,
+      "passed": true
+    },
+    {
+      "series": "DGS10",
+      "expected_date": "2026-10-02",
+      "expected_value": 5.28,
+      "actual_date": "2026-10-02",
+      "actual_value": 5.28,
+      "passed": true
+    },
+    {
+      "series": "MORTGAGE30US",
+      "expected_date": "2026-10-01",
+      "expected_value": 7.28,
+      "actual_date": "2026-10-01",
+      "actual_value": 7.28,
+      "passed": true
+    }
+  ],
+  "comparisons": [
+    {
+      "asof": "2026-10-05",
+      "Series": "https://fred.stlouisfed.org/series/BAA",
+      "Last measured date known then": "2026-09-01",
+      "Value known then": 6.47,
+      "Last measured date today": "2026-09-01",
+      "Value today": 6.47,
+      "Later observations": 0,
+      "Revised common observations": 0
+    },
+    {
+      "asof": "2026-10-05",
+      "Series": "https://fred.stlouisfed.org/series/FEDFUNDS",
+      "Last measured date known then": "2026-09-01",
+      "Value known then": 3.75,
+      "Last measured date today": "2026-09-01",
+      "Value today": 3.75,
+      "Later observations": 0,
+      "Revised common observations": 0
+    },
+    {
+      "asof": "2026-10-05",
+      "Series": "https://fred.stlouisfed.org/series/DGS10",
+      "Last measured date known then": "2026-10-02",
+      "Value known then": 5.28,
+      "Last measured date today": "2026-10-28",
+      "Value today": 5.05,
+      "Later observations": 17,
+      "Revised common observations": 0
+    },
+    {
+      "asof": "2026-10-05",
+      "Series": "https://fred.stlouisfed.org/series/MORTGAGE30US",
+      "Last measured date known then": "2026-10-01",
+      "Value known then": 7.28,
+      "Last measured date today": "2026-10-29",
+      "Value today": 7.24,
+      "Later observations": 4,
+      "Revised common observations": 0
+    },
+    {
+      "asof": "2025-01-15",
+      "Series": "https://fred.stlouisfed.org/series/PAYEMS",
+      "Last measured date known then": "2024-12-01",
+      "Value known then": 159536.0,
+      "Last measured date today": "2026-09-01",
+      "Value today": 159044.0,
+      "Later observations": 21,
+      "Revised common observations": 381
+    },
+    {
+      "asof": "2026-09-30",
+      "Series": "https://fred.stlouisfed.org/series/CPIAUCSL",
+      "Last measured date known then": "2026-08-01",
+      "Value known then": 334.131,
+      "Last measured date today": "2026-09-01",
+      "Value today": 336.298,
+      "Later observations": 1,
+      "Revised common observations": 0
+    },
+    {
+      "asof": "2026-10-29",
+      "Series": "https://fred.stlouisfed.org/series/CPIAUCSL",
+      "Last measured date known then": "2026-09-01",
+      "Value known then": 336.298,
+      "Last measured date today": "2026-09-01",
+      "Value today": 336.298,
+      "Later observations": 0,
+      "Revised common observations": 0
+    }
+  ],
+  "payems_probe": {
+    "December_2024_asof": 159536.0,
+    "December_2024_today": 158316.0,
+    "passed": true
+  }
+}

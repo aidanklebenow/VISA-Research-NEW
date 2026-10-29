@@ -1,0 +1,80 @@
+[
+  {
+    "file": "BAA_current.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAA",
+    "downloaded_utc": "2026-10-29T21:02:08.024959+00:00",
+    "observations": 1293
+  },
+  {
+    "file": "FEDFUNDS_current.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS",
+    "downloaded_utc": "2026-10-29T21:02:08.026180+00:00",
+    "observations": 867
+  },
+  {
+    "file": "DGS10_current.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10",
+    "downloaded_utc": "2026-10-29T21:02:08.032395+00:00",
+    "observations": 16191
+  },
+  {
+    "file": "MORTGAGE30US_current.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=MORTGAGE30US",
+    "downloaded_utc": "2026-10-29T21:02:08.032011+00:00",
+    "observations": 2901
+  },
+  {
+    "file": "PAYEMS_current.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PAYEMS",
+    "downloaded_utc": "2026-10-29T21:02:08.241480+00:00",
+    "observations": 1053
+  },
+  {
+    "file": "CPIAUCSL_current.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPIAUCSL",
+    "downloaded_utc": "2026-10-29T21:02:08.224262+00:00",
+    "observations": 956
+  },
+  {
+    "file": "BAA_2026-10-05.csv",
+    "url": "https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=BAA&vintage_date=2026-10-05",
+    "downloaded_utc": "2026-10-29T21:02:09.518922+00:00",
+    "observations": 1293
+  },
+  {
+    "file": "FEDFUNDS_2026-10-05.csv",
+    "url": "https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=FEDFUNDS&vintage_date=2026-10-05",
+    "downloaded_utc": "2026-10-29T21:02:08.544959+00:00",
+    "observations": 867
+  },
+  {
+    "file": "DGS10_2026-10-05.csv",
+    "url": "https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=DGS10&vintage_date=2026-10-05",
+    "downloaded_utc": "2026-10-29T21:02:11.487069+00:00",
+    "observations": 16174
+  },
+  {
+    "file": "MORTGAGE30US_2026-10-05.csv",
+    "url": "https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=MORTGAGE30US&vintage_date=2026-10-05",
+    "downloaded_utc": "2026-10-29T21:02:09.300480+00:00",
+    "observations": 2897
+  },
+  {
+    "file": "PAYEMS_2025-01-15.csv",
+    "url": "https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=PAYEMS&vintage_date=2025-01-15",
+    "downloaded_utc": "2026-10-29T21:02:09.246350+00:00",
+    "observations": 1032
+  },
+  {
+    "file": "CPIAUCSL_2026-09-30.csv",
+    "url": "https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=CPIAUCSL&vintage_date=2026-09-30",
+    "downloaded_utc": "2026-10-29T21:02:09.409897+00:00",
+    "observations": 955
+  },
+  {
+    "file": "CPIAUCSL_2026-10-29.csv",
+    "url": "https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=CPIAUCSL&vintage_date=2026-10-29",
+    "downloaded_utc": "2026-10-29T21:02:10.006674+00:00",
+    "observations": 956
+  }
+]
