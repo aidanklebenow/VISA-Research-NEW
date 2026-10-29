@@ -1,6 +1,6 @@
 # Lab 17 — Point-in-Time Audit: CPIAUCSL
 
-Prepared October 29, 2026 with AI assistance. Technical results below come from live FRED and ALFRED downloads. Personal verification and partner exercises are recorded separately and remain pending unless confirmed by the student.
+Prepared October 29, 2026 with AI assistance. Technical results below come from live FRED and ALFRED downloads. The student confirmed the three-value manual FRED check on October 29, 2026; partner exercises remain pending.
 
 ## Question and economic connection
 
@@ -65,7 +65,7 @@ AI compared these downloaded observations with the visible FRED page on October 
 | August 2026 | 334.131 | 334.131 | Match |
 | September 2026 | 336.298 | 336.298 | Match |
 
-**Student's own manual check: pending confirmation.** The assignment specifically requires the student to read three values against FRED personally; the AI comparison does not replace it.
+**Student's own manual check: confirmed October 29, 2026.** Aidan personally checked July 2026 = 332.813, August 2026 = 334.131, and September 2026 = 336.298 against FRED and confirmed that all three match. This records the student's confirmation separately from the AI comparison above.
 
 ## Fresh eyes
 
@@ -95,7 +95,7 @@ A data card identifies meaning, units, source, publication lag, revisions, retri
 
 Using September CPI for a September 30 trade would leak information released in October. Using today's revised history may also give the strategy later statistical revisions. Either can make historical results misleading; the direction and size of the performance distortion require an actual backtest and cannot be asserted from this audit alone.
 
-- Student: personally confirm the three FRED observations above.
+- Completed: student personally checked the three FRED observations above and confirmed that all three match on October 29, 2026.
 - Student: explain the historical-download function without AI and answer a real partner's question.
 - Student: record the real partner attack and evidence-based answer, and explain publication lag/backtest leakage in their own words.
 - Student: complete the Brightspace Lab 17 quiz and submit the GitHub file links as instructed. Neither quiz completion nor Brightspace submission is claimed here.
