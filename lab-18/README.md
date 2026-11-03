@@ -49,9 +49,9 @@ python3 lab-18/verify_known_answers.py
 
 The unit and UI checks use synthetic inputs, clearly separate from live verification. Only `verify_known_answers.py` contains the professor's reference values; it compares saved live reports and cannot populate the app.
 
-Verified November 3, 2026: live SEC COST values match every assigned value and all checks pass. JPM capital spending and owner earnings remain “not found”; both owner-earnings checks are “not known.” Both AI-written memos pass the numerical-token check; an injected `40.0%` is flagged. Six extraction tests and the Streamlit UI checks passed. Partner exercises and the student's own trust decision remain pending. No answers were substituted for downloaded values.
+Verified November 3, 2026: live SEC COST values match every assigned value and all checks pass. JPM capital spending and owner earnings remain “not found”; both owner-earnings checks are “not known.” Both AI-written memos pass the numerical-token check; an injected `40.0%` is flagged. Six extraction tests and the Streamlit UI checks passed. Aidan supplied his trust decision and the fresh-chat response; see [checkout notes](checkout.md). The partner exercise remains incomplete because his partner was absent. No answers were substituted for downloaded values.
 
-Student tasks: record your own one-line trust decision under COST's memo; explain the extraction function to your partner without AI; run the fresh-chat comparison without the skill; complete the Brightspace quiz and submit GitHub links. These are not claimed as completed by the assistant.
+Remaining student tasks: complete the partner explanation/reflection when a partner is available, then complete the Brightspace quiz and submit GitHub links. The study notes in [checkout.md](checkout.md) are AI-assisted preparation, not a claim that the no-AI partner exercise occurred.
 
 ## Explain simply
 

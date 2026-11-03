@@ -17,7 +17,7 @@ MEMOS = ROOT / 'lab-18/memos'
 st.set_page_config(page_title='Buffett Business Review', layout='wide')
 st.title('Buffett Business Review')
 st.caption('Data from SEC EDGAR; built with AI help, a learning demonstration, not investment advice.')
-st.write('Review earning power and cash generation using annual filings. The memo judges the business; no price data is used.')
+st.write('Review earning power and cash generation using annual filings. “Own the business” is a business-quality verdict. This lab excludes stock prices, so the app cannot determine whether the shares are a good buy at today’s price.')
 ticker = st.text_input('Ticker', 'COST').strip().upper()
 email = st.text_input('SEC contact email (used only for downloads)', value=os.getenv('SEC_EMAIL', ''), type='password')
 if st.button('Download latest SEC facts'):
@@ -61,7 +61,8 @@ memo_path = MEMOS / f'{ticker}.md'
 saved = memo_path.read_text() if memo_path.exists() else ''
 if not saved:
     st.info('Memo pending: ask Codex to use $buffett-business on this ticker after downloading.')
-memo = st.text_area('Memo text (edit here to test an unsupported number)', value=saved, height=220, key=f'memo-{ticker}')
+with st.expander('Edit memo or test an unsupported number'):
+    memo = st.text_area('Memo text', value=saved, height=220, key=f'memo-{ticker}')
 if memo:
     st.markdown(memo)
     flags = sec.unsupported_numbers(memo, report)
@@ -75,5 +76,3 @@ if memo:
         memo_path.write_text(memo)
         st.success('Saved Markdown memo locally.')
     st.download_button('Download memo (.md)', memo, file_name=f'{ticker}.md')
-st.subheader('Your decision')
-st.write('Pending your answer: Do you trust the verdict on COST, and why? Record your own one-line decision under the memo.')

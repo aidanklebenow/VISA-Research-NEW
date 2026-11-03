@@ -8,4 +8,4 @@ All the script's checks pass. Year-end-equity ROE was 28.3%, 25.1%, 31.2%, 27.8%
 
 Owner earnings here subtracts all reported capital spending from operating cash flow. It is the lab's simplified proxy, not a measurement of maintenance spending. I would own the business on this limited business-quality screen, while continuing to examine what protects its earnings. The verdict does not establish an attractive purchase price.
 
-**Aidan's trust decision: pending Aidan's own answer.**
+**Aidan's trust decision:** I trust the COST business-quality verdict because Costco's success over the years makes the strong results believable, but I question whether the stock is attractive to investors because this app does not evaluate its purchase price.
