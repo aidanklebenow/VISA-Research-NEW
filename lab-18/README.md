@@ -2,7 +2,7 @@
 
 Aidan Klebenow · FIN 43900 · Fall 2026
 
-This Streamlit app reviews a business using five fiscal years of SEC EDGAR 10-K facts. Code computes the numbers and three Buffett checks. Codex uses the bundled skill to write a separate Buffett-inspired memo. No API key, paid financial data, price feed, or model API is needed.
+This Streamlit app reviews a business using five fiscal years of SEC EDGAR 10-K facts. Its finished layout separates the financial overview, business memo, and source methodology into tabs, with latest-year metric cards and a sidebar for choosing the ticker and refreshing SEC data. Code computes the numbers and three Buffett checks. Codex uses the bundled skill to write a separate Buffett-inspired memo. No API key, paid financial data, price feed, or model API is needed.
 
 ## Open without commands
 
@@ -51,7 +51,7 @@ The unit and UI checks use synthetic inputs, clearly separate from live verifica
 
 Verified November 3, 2026: live SEC COST values match every assigned value and all checks pass. JPM capital spending and owner earnings remain “not found”; both owner-earnings checks are “not known.” Both AI-written memos pass the numerical-token check; an injected `40.0%` is flagged. Six extraction tests and the Streamlit UI checks passed. Aidan supplied his trust decision and the fresh-chat response; see [checkout notes](checkout.md). The partner exercise remains incomplete because his partner was absent. No answers were substituted for downloaded values.
 
-Remaining student tasks: complete the partner explanation/reflection when a partner is available, then complete the Brightspace quiz and submit GitHub links. The study notes in [checkout.md](checkout.md) are AI-assisted preparation, not a claim that the no-AI partner exercise occurred.
+Submission files are finalized; see [submission links](SUBMISSION.md). Aidan supplied a written reflection, edited with AI assistance. His partner was absent, so the live partner/no-AI exercise was not completed. Brightspace quiz completion and submission remain Aidan's tasks; no waiver or submission is claimed.
 
 ## Explain simply
 

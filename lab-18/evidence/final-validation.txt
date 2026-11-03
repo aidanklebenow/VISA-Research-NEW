@@ -1,0 +1,24 @@
+Final validation — November 3, 2026
+
+$ python3 -m unittest discover -s lab-18 -p test_*.py -v
+
+test_fifty_three_week_year_is_annual (test_sec_facts.ExtractionTests.test_fifty_three_week_year_is_annual) ... ok
+test_latest_annual_value_wins_not_quarter (test_sec_facts.ExtractionTests.test_latest_annual_value_wins_not_quarter) ... ok
+test_memo_flags_unsupported_percentage (test_sec_facts.ExtractionTests.test_memo_flags_unsupported_percentage) ... ok
+test_missing_capex_propagates_and_fallback_works (test_sec_facts.ExtractionTests.test_missing_capex_propagates_and_fallback_works) ... ok
+test_nonpositive_equity (test_sec_facts.ExtractionTests.test_nonpositive_equity) ... ok
+test_short_history_is_unknown (test_sec_facts.ExtractionTests.test_short_history_is_unknown) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.002s
+
+OK
+
+$ python3 lab-18/verify_known_answers.py
+All COST known-answer values and checks match; JPM missing-data probes pass.
+
+
+Streamlit UI verification on the local app environment:
+App checks passed: table, valid memo, injected percentage, absent ticker, invalid ticker.
+
+Final UI: financial overview, business memo and sources tabs; latest-year metrics; sidebar inputs; readable financial labels.

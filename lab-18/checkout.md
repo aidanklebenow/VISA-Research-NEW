@@ -24,9 +24,21 @@ The FY2024 range is reproduced in the order supplied, although its endpoints des
 
 ## Partner exercise: incomplete
 
-Aidan reported that his partner was absent. No partner explanation, question, or no-AI performance is claimed. The notes below prepare him for the exercise; they do not replace it.
+Aidan reported that his partner was absent and elected to submit before the deadline with the written reflection below. The partner exercise was not completed; no partner interaction, no-AI performance, or instructor-approved waiver is claimed.
 
-## Plain-English study notes — AI assisted
+## Written reflection — student draft edited with AI assistance
+
+**What is a skill?** A skill is a folder containing reusable instructions and optional scripts that help the AI complete a particular task consistently.
+
+**How does it work?** The AI first sees the name and description of each available skill. When a skill matches my request, it loads the detailed instructions. This avoids filling the context with instructions it does not need.
+
+**Why do the numbers belong in code?** Python selects the filing values and calculates the results so the inputs and arithmetic can be inspected and reproduced. The model explains and judges the evidence rather than inventing numbers or performing unchecked arithmetic. Code still needs testing because incorrect logic produces incorrect results.
+
+**What stays consistent, and what remains judgment?** My skill specifies the SEC data sources, financial formulas, missing-data handling and required checks. The script applies those rules consistently. The model decides whether the evidence supports owning the business, watching it or passing, and explains why. Its wording and judgment need not be identical on every run.
+
+**Why is “not found” better than an estimate here?** This lab requires reported filing values. An estimate would conceal a missing input. “Not found” keeps the gap visible and prevents unsupported calculations.
+
+## Code-explanation preparation — AI assisted
 
 A “yearly row” is simply one line of the app's financial table for one fiscal year. The function named `year_row()` builds it:
 
@@ -47,7 +59,8 @@ Practice question: If JPM has operating cash flow but no eligible capital-spendi
 ## Submission status
 
 - Complete: skill, app, live COST known-answer match, JPM missing-data probe, unsupported-number check, Markdown memos, Aidan's trust decision, and documented fresh-chat comparison.
-- Incomplete: partner/no-AI explanation and reflection, because the partner was absent. Ask the instructor how to handle that requirement if a later partner session is not possible.
+- Complete: written reflection based on Aidan's own draft, edited with AI assistance.
+- Not completed: live partner/no-AI explanation and discussion, because the partner was absent. No waiver is assumed.
 - Pending Aidan: Brightspace quiz and submission of GitHub links. Aidan plans to submit after the GitHub files and results are finalized.
 
 Assignment: [Lab 18 — Legend Investor as Skill](https://github.com/CinderZhang/FIN43900-Fall2026/blob/main/lessons/week-11/lab-18-legend-investor-as-skill.md).
