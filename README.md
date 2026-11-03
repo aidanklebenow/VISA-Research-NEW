@@ -36,3 +36,9 @@ contents have been preserved. Historical relative links and automation paths
 inside moved files retain their original text.
 
 Labs 1–5 were not present in this repository.
+
+## Lab 18 — Legend Investor as Skill
+
+[App, instructions, and verification](lab-18/) · [Buffett skill](.agents/skills/buffett-business/SKILL.md) · [COST memo](lab-18/memos/COST.md) · [JPM memo](lab-18/memos/JPM.md).
+
+On this Mac, double-click **Double-click here to open Warren Buffett app for Lab 18.command** to open the dashboard. Initial setup on another computer is documented in the Lab 18 README.

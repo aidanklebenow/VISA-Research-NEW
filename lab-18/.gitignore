@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.env
+.streamlit/secrets.toml
+evidence/*-companyfacts.json
+
+app.log
