@@ -1,0 +1,518 @@
+{
+  "ticker": "COST",
+  "company": "COSTCO WHOLESALE CORP /NEW",
+  "rows": [
+    {
+      "fiscal_year_end": "2022-08-28",
+      "revenue": {
+        "value": 226954000000,
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "filed": "2024-10-09",
+        "accession": "0000909832-24-000049",
+        "start": "2021-08-30",
+        "end": "2022-08-28"
+      },
+      "net_income": {
+        "value": 5844000000,
+        "tag": "NetIncomeLoss",
+        "filed": "2024-10-09",
+        "accession": "0000909832-24-000049",
+        "start": "2021-08-30",
+        "end": "2022-08-28"
+      },
+      "operating_cash_flow": {
+        "value": 7392000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities",
+        "filed": "2024-10-09",
+        "accession": "0000909832-24-000049",
+        "start": "2021-08-30",
+        "end": "2022-08-28"
+      },
+      "capital_spending": {
+        "value": 3891000000,
+        "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+        "filed": "2024-10-09",
+        "accession": "0000909832-24-000049",
+        "start": "2021-08-30",
+        "end": "2022-08-28"
+      },
+      "equity": {
+        "value": 20642000000,
+        "tag": "StockholdersEquity",
+        "filed": "2023-10-11",
+        "accession": "0000909832-23-000042",
+        "start": null,
+        "end": "2022-08-28"
+      },
+      "roe": {
+        "value": 28.311210154054837,
+        "tag": "NetIncomeLoss / StockholdersEquity \u00d7 100",
+        "missing": "not known"
+      },
+      "owner_earnings": {
+        "value": 3501000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities \u2212 PaymentsToAcquirePropertyPlantAndEquipment"
+      },
+      "liabilities": {
+        "value": 43519000000,
+        "tag": "Liabilities",
+        "filed": "2023-10-11",
+        "accession": "0000909832-23-000042",
+        "start": null,
+        "end": "2022-08-28"
+      },
+      "research_and_development": {
+        "value": null,
+        "tag": "not found"
+      },
+      "current_assets": {
+        "value": 32696000000,
+        "tag": "AssetsCurrent",
+        "filed": "2023-10-11",
+        "accession": "0000909832-23-000042",
+        "start": null,
+        "end": "2022-08-28"
+      },
+      "current_liabilities": {
+        "value": 31998000000,
+        "tag": "LiabilitiesCurrent",
+        "filed": "2023-10-11",
+        "accession": "0000909832-23-000042",
+        "start": null,
+        "end": "2022-08-28"
+      },
+      "current_ratio": {
+        "value": 1.0218138633664604,
+        "tag": "current_assets / current_liabilities",
+        "missing": "not known"
+      },
+      "liabilities_equity": {
+        "value": 2.1082743920162774,
+        "tag": "liabilities / equity",
+        "missing": "not known"
+      },
+      "rd_revenue": {
+        "value": null,
+        "tag": "research_and_development / revenue",
+        "missing": "not found"
+      }
+    },
+    {
+      "fiscal_year_end": "2023-09-03",
+      "revenue": {
+        "value": 242290000000,
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "filed": "2025-10-08",
+        "accession": "0000909832-25-000101",
+        "start": "2022-08-29",
+        "end": "2023-09-03"
+      },
+      "net_income": {
+        "value": 6292000000,
+        "tag": "NetIncomeLoss",
+        "filed": "2025-10-08",
+        "accession": "0000909832-25-000101",
+        "start": "2022-08-29",
+        "end": "2023-09-03"
+      },
+      "operating_cash_flow": {
+        "value": 11068000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities",
+        "filed": "2025-10-08",
+        "accession": "0000909832-25-000101",
+        "start": "2022-08-29",
+        "end": "2023-09-03"
+      },
+      "capital_spending": {
+        "value": 4323000000,
+        "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+        "filed": "2025-10-08",
+        "accession": "0000909832-25-000101",
+        "start": "2022-08-29",
+        "end": "2023-09-03"
+      },
+      "equity": {
+        "value": 25058000000,
+        "tag": "StockholdersEquity",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2023-09-03"
+      },
+      "roe": {
+        "value": 25.10974539069359,
+        "tag": "NetIncomeLoss / StockholdersEquity \u00d7 100",
+        "missing": "not known"
+      },
+      "owner_earnings": {
+        "value": 6745000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities \u2212 PaymentsToAcquirePropertyPlantAndEquipment"
+      },
+      "liabilities": {
+        "value": 43936000000,
+        "tag": "Liabilities",
+        "filed": "2024-10-09",
+        "accession": "0000909832-24-000049",
+        "start": null,
+        "end": "2023-09-03"
+      },
+      "research_and_development": {
+        "value": null,
+        "tag": "not found"
+      },
+      "current_assets": {
+        "value": 35879000000,
+        "tag": "AssetsCurrent",
+        "filed": "2024-10-09",
+        "accession": "0000909832-24-000049",
+        "start": null,
+        "end": "2023-09-03"
+      },
+      "current_liabilities": {
+        "value": 33583000000,
+        "tag": "LiabilitiesCurrent",
+        "filed": "2024-10-09",
+        "accession": "0000909832-24-000049",
+        "start": null,
+        "end": "2023-09-03"
+      },
+      "current_ratio": {
+        "value": 1.0683679242473871,
+        "tag": "current_assets / current_liabilities",
+        "missing": "not known"
+      },
+      "liabilities_equity": {
+        "value": 1.7533721765504031,
+        "tag": "liabilities / equity",
+        "missing": "not known"
+      },
+      "rd_revenue": {
+        "value": null,
+        "tag": "research_and_development / revenue",
+        "missing": "not found"
+      }
+    },
+    {
+      "fiscal_year_end": "2024-09-01",
+      "revenue": {
+        "value": 254453000000,
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2023-09-04",
+        "end": "2024-09-01"
+      },
+      "net_income": {
+        "value": 7367000000,
+        "tag": "NetIncomeLoss",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2023-09-04",
+        "end": "2024-09-01"
+      },
+      "operating_cash_flow": {
+        "value": 11339000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2023-09-04",
+        "end": "2024-09-01"
+      },
+      "capital_spending": {
+        "value": 4710000000,
+        "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2023-09-04",
+        "end": "2024-09-01"
+      },
+      "equity": {
+        "value": 23622000000,
+        "tag": "StockholdersEquity",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2024-09-01"
+      },
+      "roe": {
+        "value": 31.187029040724752,
+        "tag": "NetIncomeLoss / StockholdersEquity \u00d7 100",
+        "missing": "not known"
+      },
+      "owner_earnings": {
+        "value": 6629000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities \u2212 PaymentsToAcquirePropertyPlantAndEquipment"
+      },
+      "liabilities": {
+        "value": 46209000000,
+        "tag": "Liabilities",
+        "filed": "2025-10-08",
+        "accession": "0000909832-25-000101",
+        "start": null,
+        "end": "2024-09-01"
+      },
+      "research_and_development": {
+        "value": null,
+        "tag": "not found"
+      },
+      "current_assets": {
+        "value": 34246000000,
+        "tag": "AssetsCurrent",
+        "filed": "2025-10-08",
+        "accession": "0000909832-25-000101",
+        "start": null,
+        "end": "2024-09-01"
+      },
+      "current_liabilities": {
+        "value": 35464000000,
+        "tag": "LiabilitiesCurrent",
+        "filed": "2025-10-08",
+        "accession": "0000909832-25-000101",
+        "start": null,
+        "end": "2024-09-01"
+      },
+      "current_ratio": {
+        "value": 0.965655312429506,
+        "tag": "current_assets / current_liabilities",
+        "missing": "not known"
+      },
+      "liabilities_equity": {
+        "value": 1.9561849123698247,
+        "tag": "liabilities / equity",
+        "missing": "not known"
+      },
+      "rd_revenue": {
+        "value": null,
+        "tag": "research_and_development / revenue",
+        "missing": "not found"
+      }
+    },
+    {
+      "fiscal_year_end": "2025-08-31",
+      "revenue": {
+        "value": 275235000000,
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2024-09-02",
+        "end": "2025-08-31"
+      },
+      "net_income": {
+        "value": 8099000000,
+        "tag": "NetIncomeLoss",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2024-09-02",
+        "end": "2025-08-31"
+      },
+      "operating_cash_flow": {
+        "value": 13335000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2024-09-02",
+        "end": "2025-08-31"
+      },
+      "capital_spending": {
+        "value": 5498000000,
+        "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2024-09-02",
+        "end": "2025-08-31"
+      },
+      "equity": {
+        "value": 29164000000,
+        "tag": "StockholdersEquity",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2025-08-31"
+      },
+      "roe": {
+        "value": 27.770539020710466,
+        "tag": "NetIncomeLoss / StockholdersEquity \u00d7 100",
+        "missing": "not known"
+      },
+      "owner_earnings": {
+        "value": 7837000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities \u2212 PaymentsToAcquirePropertyPlantAndEquipment"
+      },
+      "liabilities": {
+        "value": 47935000000,
+        "tag": "Liabilities",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2025-08-31"
+      },
+      "research_and_development": {
+        "value": null,
+        "tag": "not found"
+      },
+      "current_assets": {
+        "value": 38380000000,
+        "tag": "AssetsCurrent",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2025-08-31"
+      },
+      "current_liabilities": {
+        "value": 37108000000,
+        "tag": "LiabilitiesCurrent",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2025-08-31"
+      },
+      "current_ratio": {
+        "value": 1.0342783227336423,
+        "tag": "current_assets / current_liabilities",
+        "missing": "not known"
+      },
+      "liabilities_equity": {
+        "value": 1.6436359895761898,
+        "tag": "liabilities / equity",
+        "missing": "not known"
+      },
+      "rd_revenue": {
+        "value": null,
+        "tag": "research_and_development / revenue",
+        "missing": "not found"
+      }
+    },
+    {
+      "fiscal_year_end": "2026-08-30",
+      "revenue": {
+        "value": 303154000000,
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2025-09-01",
+        "end": "2026-08-30"
+      },
+      "net_income": {
+        "value": 9226000000,
+        "tag": "NetIncomeLoss",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2025-09-01",
+        "end": "2026-08-30"
+      },
+      "operating_cash_flow": {
+        "value": 15817000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2025-09-01",
+        "end": "2026-08-30"
+      },
+      "capital_spending": {
+        "value": 6435000000,
+        "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": "2025-09-01",
+        "end": "2026-08-30"
+      },
+      "equity": {
+        "value": 35803000000,
+        "tag": "StockholdersEquity",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2026-08-30"
+      },
+      "roe": {
+        "value": 25.768790324833112,
+        "tag": "NetIncomeLoss / StockholdersEquity \u00d7 100",
+        "missing": "not known"
+      },
+      "owner_earnings": {
+        "value": 9382000000,
+        "tag": "NetCashProvidedByUsedInOperatingActivities \u2212 PaymentsToAcquirePropertyPlantAndEquipment"
+      },
+      "liabilities": {
+        "value": 53242000000,
+        "tag": "Liabilities",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2026-08-30"
+      },
+      "research_and_development": {
+        "value": null,
+        "tag": "not found"
+      },
+      "current_assets": {
+        "value": 46582000000,
+        "tag": "AssetsCurrent",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2026-08-30"
+      },
+      "current_liabilities": {
+        "value": 43952000000,
+        "tag": "LiabilitiesCurrent",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093",
+        "start": null,
+        "end": "2026-08-30"
+      },
+      "current_ratio": {
+        "value": 1.0598380050964689,
+        "tag": "current_assets / current_liabilities",
+        "missing": "not known"
+      },
+      "liabilities_equity": {
+        "value": 1.4870820880931765,
+        "tag": "liabilities / equity",
+        "missing": "not known"
+      },
+      "rd_revenue": {
+        "value": null,
+        "tag": "research_and_development / revenue",
+        "missing": "not found"
+      }
+    }
+  ],
+  "checks": {
+    "ROE \u2265 15% every year": "pass",
+    "Owner earnings positive every year": "pass",
+    "Owner earnings grew first to last": "pass"
+  },
+  "revenue_growth_pct": 7.505668815961197,
+  "thresholds": {
+    "graham_current_ratio": 2.0,
+    "wood_growth_pct": 15.0
+  },
+  "panel": {
+    "Buffett": {
+      "ROE \u2265 15% every year": "pass",
+      "Owner earnings positive every year": "pass",
+      "Owner earnings grew first to last": "pass"
+    },
+    "Graham": {
+      "Latest current ratio \u2265 2.00": "fail",
+      "Net income positive every year": "pass",
+      "Net income grew first to last": "pass"
+    },
+    "Burry": {
+      "Operating cash flow \u2265 net income every year": "pass",
+      "Latest liabilities / equity \u2264 2.00": "pass"
+    },
+    "Cathie Wood": {
+      "Annual revenue growth \u2265 15.00%": "fail",
+      "Latest R&D / revenue \u2265 5.00%": "not known"
+    }
+  },
+  "source": {
+    "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000909832.json",
+    "cik": 909832,
+    "downloaded_utc": "2026-11-05T22:06:17.200477+00:00",
+    "sha256": "c20ab77d9b730b8bfaa70f308fcfbaac6fef4758df4dfa42810476e860014fd2",
+    "transport": "curl; same SEC User-Agent; Python host resolution failed"
+  }
+}

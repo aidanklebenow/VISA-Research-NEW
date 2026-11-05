@@ -1,0 +1,7 @@
+.env
+.venv/
+app.log
+.streamlit/secrets.toml
+evidence/*-companyfacts.json
+local-notes.json
+desktop-build/

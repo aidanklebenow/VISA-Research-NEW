@@ -1,0 +1,6 @@
+# Versions used for the November 5 validation; Python 3.14.
+streamlit==1.67.0
+pandas==3.1.1
+certifi>=2026.2.25
+# Only needed to rebuild the optional macOS Desktop icon.
+Pillow==13.0.0

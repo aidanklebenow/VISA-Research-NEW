@@ -1,0 +1,26 @@
+{
+  "COST": {
+    "source_sha256": "c20ab77d9b730b8bfaa70f308fcfbaac6fef4758df4dfa42810476e860014fd2",
+    "method": "Codex-authored separate Markdown memo; manually reviewed against printed facts; no runtime model API",
+    "thresholds": {
+      "graham_current_ratio": 2.0,
+      "wood_growth_pct": 15.0
+    }
+  },
+  "NVDA": {
+    "source_sha256": "d2c4fd7d1ed602f5937a0161ba044b3b0efc3d14faf44a0bd45b7ff3345802b1",
+    "method": "Codex-authored separate Markdown memo; manually reviewed against printed facts; no runtime model API",
+    "thresholds": {
+      "graham_current_ratio": 2.0,
+      "wood_growth_pct": 15.0
+    }
+  },
+  "JPM": {
+    "source_sha256": "a11d4efdb00dc6d92e7491808c8ca7c615f6876c90a1c6e44a0b5e60554f0db7",
+    "method": "Codex-authored separate Markdown memo; manually reviewed against printed facts; no runtime model API",
+    "thresholds": {
+      "graham_current_ratio": 2.0,
+      "wood_growth_pct": 15.0
+    }
+  }
+}

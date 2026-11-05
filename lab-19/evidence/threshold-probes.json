@@ -1,0 +1,55 @@
+{
+  "baseline_thresholds": {
+    "graham_current_ratio": 2.0,
+    "wood_growth_pct": 15.0
+  },
+  "baseline": {
+    "Buffett": {
+      "ROE \u2265 15% every year": "pass",
+      "Owner earnings positive every year": "pass",
+      "Owner earnings grew first to last": "pass"
+    },
+    "Graham": {
+      "Latest current ratio \u2265 2.00": "fail",
+      "Net income positive every year": "pass",
+      "Net income grew first to last": "pass"
+    },
+    "Burry": {
+      "Operating cash flow \u2265 net income every year": "pass",
+      "Latest liabilities / equity \u2264 2.00": "pass"
+    },
+    "Cathie Wood": {
+      "Annual revenue growth \u2265 15.00%": "fail",
+      "Latest R&D / revenue \u2265 5.00%": "not known"
+    }
+  },
+  "probe_thresholds": {
+    "graham_current_ratio": 1,
+    "wood_growth_pct": 5
+  },
+  "probe": {
+    "Buffett": {
+      "ROE \u2265 15% every year": "pass",
+      "Owner earnings positive every year": "pass",
+      "Owner earnings grew first to last": "pass"
+    },
+    "Graham": {
+      "Latest current ratio \u2265 1.00": "pass",
+      "Net income positive every year": "pass",
+      "Net income grew first to last": "pass"
+    },
+    "Burry": {
+      "Operating cash flow \u2265 net income every year": "pass",
+      "Latest liabilities / equity \u2264 2.00": "pass"
+    },
+    "Cathie Wood": {
+      "Annual revenue growth \u2265 5.00%": "pass",
+      "Latest R&D / revenue \u2265 5.00%": "not known"
+    }
+  },
+  "data_sha256_unchanged": "c20ab77d9b730b8bfaa70f308fcfbaac6fef4758df4dfa42810476e860014fd2",
+  "student_choice": {
+    "graham_current_ratio": 1.0,
+    "reason": "Aidan chose to include Costco and use the screen as a starting point for research."
+  }
+}
