@@ -6,6 +6,8 @@
 
 ## Review these files
 
+- [Personal reflection](PERSONAL_REFLECTION.md): concise reflection written with AI assistance and saved at Aidan's request.
+
 - [README](README.md): application overview, local launch and validation.
 - [Results](RESULTS.md): COST reference and NVIDIA panel findings.
 - [Personal checkout](MY_CHECKOUT.md): Aidan's chosen cutoff, research purpose and remaining personal responses.
