@@ -26,6 +26,10 @@ Run the standalone checker from the repository root:
 python3 lab-13/mandate.py
 ```
 
+## Project 2 and Lab 20
+
+Start with the [Project 2 README](Project-2/README.md) for the decision command and app setup. See the [Lab 20 checkout record](lab-20/Lab20_readiness.md) for evidence and open items.
+
 ## Project 1
 
 Start with the [Project 1 work guide](Project-1/START_HERE.md).

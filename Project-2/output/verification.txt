@@ -1,0 +1,26 @@
+Project 2 development verification — November 10, 2026
+
+Environment: existing lab-19/.venv Python. Not a fresh-install or independent partner cold run.
+
+python model.py: exit 0; wrote output/results.json.
+python -m unittest discover -s tests -v: five tests passed.
+python tests/check_app.py: passed app render, visible infeasibility and disconnected question-box checks.
+Streamlit AppTest emitted bare-mode warning and Arrow CPU-cache sandbox warnings; completed successfully.
+No screenshot or browser visual inspection claimed.
+
+Base full-window calculation:
+Equal weight: return proxy 4.87%, volatility 8.80%, model FAIL.
+Inverse volatility: return proxy 3.64%, volatility 1.67%, model FAIL.
+Constrained: 55/0/0/30/15, return proxy 7.50%, volatility 6.80%, model PASS.
+Every portfolio full-mandate verdict: FAIL, unresolved mandate requirements.
+
+Development stresses (SGOV/IEF/LQD/VTI/VXUS, percentages):
+Base: 55/0/0/30/15.
+VTI estimate -1pp: 55/0/0/45/0.
+Last 36 returns: 80/0/0/10/10.
+Annual investor costs 0.50%: 50/0/0/40/10.
+Reserve floor 30%: 55/0/0/30/15 (nonbinding constraint).
+Volatility ceiling 5%: 55/0/0/30/15; model FAIL and STOP.
+
+These are AI-assisted development tests, not the student's Locked Changed-Input Record.
+No student final decision, partner run, publication, video upload or submission claimed.

@@ -1,0 +1,426 @@
+{
+  "base": {
+    "as_of": "2026-10-30",
+    "settings": {
+      "target": 0.075,
+      "reserve": 0.1,
+      "annual_cost": 0,
+      "volatility_limit": 0.1
+    },
+    "tickers": [
+      "SGOV",
+      "IEF",
+      "LQD",
+      "VTI",
+      "VXUS"
+    ],
+    "estimates": {
+      "vehicles": [
+        [
+          "SGOV",
+          0.03715067544682478,
+          0.004988821830880046
+        ],
+        [
+          "IEF",
+          -0.017887077727359355,
+          0.0765386051457533
+        ],
+        [
+          "LQD",
+          -0.00805996362703958,
+          0.09788355330999643
+        ],
+        [
+          "VTI",
+          0.1313422751663612,
+          0.15937127540367163
+        ],
+        [
+          "VXUS",
+          0.1011851718246522,
+          0.15165351177528802
+        ]
+      ],
+      "correlations": [
+        [
+          1.0,
+          0.19556907584474015,
+          0.24033253755715772,
+          0.17249537855481972,
+          0.19151749946409444
+        ],
+        [
+          0.19556907584474015,
+          1.0,
+          0.933801931943963,
+          0.5411709052397056,
+          0.6993392659684128
+        ],
+        [
+          0.24033253755715772,
+          0.933801931943963,
+          1.0,
+          0.7191791301801455,
+          0.8208567973415667
+        ],
+        [
+          0.17249537855481972,
+          0.5411709052397056,
+          0.7191791301801455,
+          1.0,
+          0.8001981267770608
+        ],
+        [
+          0.19151749946409444,
+          0.6993392659684128,
+          0.8208567973415667,
+          0.8001981267770608,
+          1.0
+        ]
+      ],
+      "months": 60,
+      "price_start": "2021-09-30",
+      "price_end": "2026-09-30"
+    },
+    "portfolios": [
+      {
+        "name": "Equal weight",
+        "weights": [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        "expected_return": 0.04874621621668785,
+        "volatility": 0.0880291617443202,
+        "reserve_weight": 0.2,
+        "net_return_proxy": 0.04874621621668785,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": false,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": true
+        },
+        "model_verdict": "FAIL",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      },
+      {
+        "name": "Inverse volatility",
+        "weights": [
+          0.8472087077227654,
+          0.05522145704576527,
+          0.043179606312548545,
+          0.02652029536498038,
+          0.02786993355394046
+        ],
+        "expected_return": 0.036441859132345156,
+        "volatility": 0.01670909418093935,
+        "reserve_weight": 0.8472087077227654,
+        "net_return_proxy": 0.036441859132345156,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": false,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": true
+        },
+        "model_verdict": "FAIL",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      },
+      {
+        "name": "Constrained portfolio",
+        "weights": [
+          0.55,
+          0.0,
+          0.0,
+          0.3,
+          0.15
+        ],
+        "expected_return": 0.07501332981935982,
+        "volatility": 0.06797580826175709,
+        "reserve_weight": 0.55,
+        "net_return_proxy": 0.07501332981935982,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": true,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": true
+        },
+        "model_verdict": "PASS",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      }
+    ],
+    "feasible": true,
+    "signal": {
+      "measured": "2026-09-01",
+      "vintage": "2026-10-29",
+      "eligible": "2026-10-30",
+      "value": 336.298,
+      "prior_value": 324.245,
+      "inflation_yoy": 0.03717250844268993,
+      "role": "Purchasing-power monitor only; does not alter weights or predict returns."
+    },
+    "status": "RESEARCH ONLY \u2014 not approved for client allocation"
+  },
+  "stresses": [
+    {
+      "scenario": "Base",
+      "settings": {
+        "target": 0.075,
+        "reserve": 0.1,
+        "annual_cost": 0,
+        "volatility_limit": 0.1
+      },
+      "last_36": false,
+      "vti_shift": 0,
+      "result": {
+        "name": "Constrained portfolio",
+        "weights": [
+          0.55,
+          0.0,
+          0.0,
+          0.3,
+          0.15
+        ],
+        "expected_return": 0.07501332981935982,
+        "volatility": 0.06797580826175709,
+        "reserve_weight": 0.55,
+        "net_return_proxy": 0.07501332981935982,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": true,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": true
+        },
+        "model_verdict": "PASS",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      },
+      "stop": false
+    },
+    {
+      "scenario": "VTI estimate lower by 1 percentage point",
+      "settings": {
+        "target": 0.075,
+        "reserve": 0.1,
+        "annual_cost": 0,
+        "volatility_limit": 0.1
+      },
+      "last_36": false,
+      "vti_shift": -0.01,
+      "result": {
+        "name": "Constrained portfolio",
+        "weights": [
+          0.55,
+          0.0,
+          0.0,
+          0.45,
+          0.0
+        ],
+        "expected_return": 0.07503689532061618,
+        "volatility": 0.07224095137923763,
+        "reserve_weight": 0.55,
+        "net_return_proxy": 0.07503689532061618,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": true,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": true
+        },
+        "model_verdict": "PASS",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      },
+      "stop": false
+    },
+    {
+      "scenario": "Last 36 monthly returns",
+      "settings": {
+        "target": 0.075,
+        "reserve": 0.1,
+        "annual_cost": 0,
+        "volatility_limit": 0.1
+      },
+      "last_36": true,
+      "vti_shift": 0,
+      "result": {
+        "name": "Constrained portfolio",
+        "weights": [
+          0.8,
+          0.0,
+          0.0,
+          0.1,
+          0.1
+        ],
+        "expected_return": 0.07582246770633035,
+        "volatility": 0.023216399411444624,
+        "reserve_weight": 0.8,
+        "net_return_proxy": 0.07582246770633035,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": true,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": true
+        },
+        "model_verdict": "PASS",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      },
+      "stop": false
+    },
+    {
+      "scenario": "Annual investor cost 0.50%",
+      "settings": {
+        "target": 0.075,
+        "reserve": 0.1,
+        "annual_cost": 0.005,
+        "volatility_limit": 0.1
+      },
+      "last_36": false,
+      "vti_shift": 0,
+      "result": {
+        "name": "Constrained portfolio",
+        "weights": [
+          0.5,
+          0.0,
+          0.0,
+          0.4,
+          0.1
+        ],
+        "expected_return": 0.0812307649724221,
+        "volatility": 0.0769197220999213,
+        "reserve_weight": 0.5,
+        "net_return_proxy": 0.0762307649724221,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": true,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": true
+        },
+        "model_verdict": "PASS",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      },
+      "stop": false
+    },
+    {
+      "scenario": "Reserve floor 30%",
+      "settings": {
+        "target": 0.075,
+        "reserve": 0.3,
+        "annual_cost": 0,
+        "volatility_limit": 0.1
+      },
+      "last_36": false,
+      "vti_shift": 0,
+      "result": {
+        "name": "Constrained portfolio",
+        "weights": [
+          0.55,
+          0.0,
+          0.0,
+          0.3,
+          0.15
+        ],
+        "expected_return": 0.07501332981935982,
+        "volatility": 0.06797580826175709,
+        "reserve_weight": 0.55,
+        "net_return_proxy": 0.07501332981935982,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": true,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": true
+        },
+        "model_verdict": "PASS",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      },
+      "stop": false
+    },
+    {
+      "scenario": "Volatility ceiling 5%",
+      "settings": {
+        "target": 0.075,
+        "reserve": 0.1,
+        "annual_cost": 0,
+        "volatility_limit": 0.05
+      },
+      "last_36": false,
+      "vti_shift": 0,
+      "result": {
+        "name": "Constrained portfolio",
+        "weights": [
+          0.55,
+          0.0,
+          0.0,
+          0.3,
+          0.15
+        ],
+        "expected_return": 0.07501332981935982,
+        "volatility": 0.06797580826175709,
+        "reserve_weight": 0.55,
+        "net_return_proxy": 0.07501332981935982,
+        "rules": {
+          "Long-only and fully invested": true,
+          "Return estimate proxy meets target": true,
+          "SGOV reserve meets minimum": true,
+          "Estimated volatility within proposed limit": false
+        },
+        "model_verdict": "FAIL",
+        "full_mandate_verdict": "FAIL \u2014 mandate not established",
+        "unresolved": [
+          "7% issuer rule: ETF look-through, aggregation and Treasury exception undefined",
+          "Zero realized losses cannot be guaranteed",
+          "Arithmetic estimate does not establish 5-year compounded net target",
+          "Client risk limit, benchmark and withdrawal schedule not approved"
+        ]
+      },
+      "stop": true
+    }
+  ]
+}
