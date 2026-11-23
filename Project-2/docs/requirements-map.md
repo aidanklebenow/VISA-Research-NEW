@@ -4,9 +4,9 @@
 
 | ID | Requirement | Location | Evidence | Verified |
 |---|---|---|---|---|
-| P2-01 | Start and operate the Python web app | [app.py:160](../app.py#L160), [README](../README.md) | Automated app test and three setup commands per platform | Yes for automated app |
+| P2-01 | Start and operate the Python web app | [app.py:161](../app.py#L161), [README](../README.md) | Automated app test and three setup commands per platform | Yes for automated app |
 | P2-02 | Own the investment rules | [Committee memo](decision-memo.md) | Aidan’s mandate fields | No |
-| P2-03 | Two comparisons, candidate and verdicts | [app.py:204](../app.py#L204) | [Executed result](../output/results.json) | Yes |
+| P2-03 | Two comparisons, candidate and verdicts | [app.py:205](../app.py#L205) | [Executed result](../output/results.json) | Yes |
 | P2-04 | Date-gated signal and data card | [model.py:29](../model.py#L29), [data card](data-card.md) | Vintage and empty-input tests | Yes |
 | P2-05 | Stress estimates, window, costs and constraints; show stop conditions | [model.py:106](../model.py#L106) | [Scenario output](../output/results.json) and automated app test | Yes |
 | P2-06 | Locked changed-input evidence | [Validation record](validation-and-ai-use.md) | Aidan’s prediction commit, run and diagnosis | No |

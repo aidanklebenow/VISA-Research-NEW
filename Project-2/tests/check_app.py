@@ -13,14 +13,17 @@ assert sections == [
 assert [metric.value for metric in app.metric[:3]] == ['7.5%', '6.8%', '5 of 5 Passed']
 assert len(app.get('plotly_chart')) == 2
 assert not app.toggle(key='dark_mode').value
+assert app.toggle(key='dark_mode').label == 'Light Mode'
 
 app.toggle(key='dark_mode').set_value(True).run(timeout=60)
 assert not app.exception, app.exception
 assert app.toggle(key='dark_mode').value
+assert app.toggle(key='dark_mode').label == 'Dark Mode'
 assert len(app.get('plotly_chart')) == 2
 assert app.metric[0].value == '7.5%'
 app.toggle(key='dark_mode').set_value(False).run(timeout=60)
 assert not app.exception, app.exception
+assert app.toggle(key='dark_mode').label == 'Light Mode'
 
 app.number_input(key='portfolio_size').set_value(200_000).run(timeout=60)
 assert not app.exception, app.exception
