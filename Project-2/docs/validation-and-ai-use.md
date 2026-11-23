@@ -22,9 +22,11 @@ Exact backend model versions were not captured in the technical records.
 
 ## Locked changed-input record · Aidan
 
-- Original prediction, timestamp, and pre-run GitHub commit: ___
-- Before and after outputs and run timestamp: ___
-- Actual result, effect on the decision, and diagnosis: ___
+Only the header time line was removed after locking; the five prediction answers are unchanged from 0de8dab.
+
+- [Original prediction, Q1–5](https://github.com/aidanklebenow/VISA-Research-NEW/blob/0de8dab6d9c1bfc8844da029fd499a34085cce78/lab-20/prediction-2.md) was committed November 23, 2026, at 4:16:31 p.m. ET.
+- [Results and actual decision effect](https://github.com/aidanklebenow/VISA-Research-NEW/blob/0519c6154cab2a9b2deef213ce7fa5532065df37/lab-20/prediction-2.md) were committed November 23, 2026, at 4:32:29 p.m. ET.
+- Aidan's screenshots: [before, original case](../evidence/locked-record/prediction-2-before.png) and [after, no qualifying mix](../evidence/locked-record/prediction-2-after.png). The 60% SGOV reserve input is documented in the written record.
 
 ## Personal check of a material AI output · Aidan
 
