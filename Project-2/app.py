@@ -378,7 +378,7 @@ with st.expander('Data Sources & Notes'):
 - **Inflation:** U.S. Bureau of Labor Statistics Consumer Price Index via FRED/ALFRED. The October 29, 2026 vintage was eligible for the October 30, 2026 decision snapshot. [FRED terms and attribution](https://fred.stlouisfed.org/legal/).
 - **Data use:** No personal data used. Market data remains subject to provider terms. The portfolio size is illustrative.
 - **Project 2 Editions A and B:** For the student’s own comparison. Neither is submitted.
-- **AI-use disclosure:** OpenAI Codex-assisted implementation and validation. Education, not investment advice.
+- AI use: OpenAI Codex assisted with software, validation, and documentation; Claude (Anthropic) assisted with reviewing wording and planning. All decisions and the locked prediction are Aidan's. Education, not investment advice.
 """)
     if snapshot:
         st.caption(f"September 2026 inflation: {report.percent(snapshot['signal']['inflation_yoy'])} year over year. This series tracks changes in consumer prices and does not set fund weights.")
