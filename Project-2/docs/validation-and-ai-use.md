@@ -1,6 +1,6 @@
-# Validation and AI use
+# Validation and AI Use
 
-## Claim and checks
+## Claim and Checks
 
 The main claim is that the selected mix has the lowest estimated volatility among the tested mixes that meet the return and SGOV reserve requirements. The search tests portfolio weights in steps of five percentage points. The volatility ceiling is checked after selection. The model displays the least-volatile candidate and stops if it breaches the ceiling. If no mix meets return and reserve, the two comparators remain available.
 
@@ -10,7 +10,7 @@ The snapshot is dated October 30, 2026. Prices end September 30 and were retriev
 
 Ten model tests cover the known portfolio, a breached risk ceiling, infeasibility, annual cost arithmetic, vintage timing, missing or empty source evidence, empty CPI, the sensitivity grid, explicit history windows, and fund limits. Two report tests check the frontier, sensitivity and cap validation. The automated app check verifies the report sections, original result, both themes, dollar displays, stop messages and reset. The live sensitivity grid uses the report’s active inputs; the archived stress and sensitivity outputs retain their original definitions. The base results and six existing stress cases reproduce without changing the committed JSON. [Executed results](../output/results.json) include estimate, lookback, cost, reserve, and risk stresses and the centered two-input grid.
 
-## Material AI contributions
+## Material AI Contributions
 
 | Tool and date | Contribution | Check and disposition |
 |---|---|---|

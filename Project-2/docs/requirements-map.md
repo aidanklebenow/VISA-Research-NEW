@@ -1,4 +1,4 @@
-# Project 2 requirement map
+# Project 2 Requirement Map
 
 [Official brief](https://github.com/CinderZhang/FIN43900-Fall2026/blob/main/projects/project-2-investment-management-application.md)
 

@@ -1,4 +1,4 @@
-### CPI data card
+# CPI Data Card
 
 Source: [FRED CPIAUCSL](https://fred.stlouisfed.org/series/CPIAUCSL), produced by BLS; historical vintage from [ALFRED](https://alfred.stlouisfed.org/series?seid=CPIAUCSL). Saved download metadata: `data/macro-download-manifest.json`, recovered from Lab 17. Source inspection belongs to the October 29 Lab 17 evidence, not a new November source verification.
 
@@ -10,7 +10,7 @@ Eligibility: this particular frozen vintage is allowed from the next trading ses
 
 Role: informational purchasing-power monitor. No fitted prediction, tactical allocation or backtest depends on this series. A CPI increase alone does not establish which fund will outperform. Stop historical strategy use unless every decision has an eligible historical vintage and execution timing.
 
-## ETF issuer profiles
+## ETF Issuer Profiles
 
 [Saved ETF profiles](../data/etf_profiles.json) hold the fund names, issuer, strategy descriptions, dated holdings counts and exposures, and prospectus expense ratios. Each record stores the source URL, access date (November 23, 2026), and provider observation dates where supplied. These facts are shown for context only. The allocation continues to use the same historical price-based estimates. The expense ratios describe fund-level fees already reflected in adjusted price history.
 

@@ -10,6 +10,7 @@
 | Actual results and decision effect | [Results commit 0519c61](https://github.com/aidanklebenow/VISA-Research-NEW/blob/0519c6154cab2a9b2deef213ce7fa5532065df37/lab-20/prediction-2.md) |
 | Aidan’s before screenshot | [Original case](https://github.com/aidanklebenow/VISA-Research-NEW/blob/lab-20-readiness/Project-2/evidence/locked-record/prediction-2-before.png) |
 | Aidan’s after screenshot | [No qualifying mix](https://github.com/aidanklebenow/VISA-Research-NEW/blob/lab-20-readiness/Project-2/evidence/locked-record/prediction-2-after.png) |
+| Final app verification | [Chrome screenshots and test evidence](https://github.com/aidanklebenow/VISA-Research-NEW/blob/lab-20-readiness/Project-2/evidence/README.md#final-submission-verification--november-23-2026) |
 | Fund data and provenance | [Data card](https://github.com/aidanklebenow/VISA-Research-NEW/blob/lab-20-readiness/Project-2/docs/data-card.md) |
 | Research evolution editions | No submission required for Project 2. |
 | Videos 1–3 and corrected transcripts | No recording links or transcript text were provided for this repository revision. |

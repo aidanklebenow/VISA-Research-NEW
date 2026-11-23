@@ -1,4 +1,4 @@
-# Portfolio comparator policy
+# Portfolio Comparator Policy
 
 These comparisons use the same five funds, historical window, cost assumptions and rule checks as the selected portfolio.
 
