@@ -1,69 +1,53 @@
-AI use: OpenAI Codex assisted with code, research organization, validation and drafts. Aidan must review and take ownership of the final analysis and decision; that review is pending.
+AI use: OpenAI Codex assisted with software, validation, and documentation. Education, not investment advice.
 
-Education, not investment advice.
+# Portfolio Trust
 
-# Portfolio Trust — Project 2
+Portfolio Trust helps a portfolio analyst and an investment committee decide whether a way of splitting money across five funds is worth using. It compares three mixes, estimates how much each might earn and how much its value might swing, and shows which rules each mix passes. The October 30, 2026 example passes its numerical checks for one mix. Client approval is withheld while the investment rules are unresolved.
 
-**Working conclusion: restrict this process to research; do not approve client allocation while mandate requirements remain unresolved.** This Python app helps a student portfolio analyst compare allocations, inspect assumptions and explain why a polished answer may still be unsuitable.
+## Start here
 
-## Reproduce the decision
+Install Python 3.14 and Git. Clone and open this project:
 
-From the repository root, run this with Python 3:
-
-```bash
-python3 Project-2/model.py
+```sh
+git clone --branch p2-final https://github.com/aidanklebenow/VISA-Research-NEW.git
+cd VISA-Research-NEW/Project-2
 ```
 
-The command prints the portfolio weights, return proxies, volatility and verdicts, and writes [output/results.json](output/results.json). It uses bundled data and the Python standard library. From inside `Project-2/`, use `python3 model.py`.
+### Windows PowerShell
 
-| Portfolio | Net annual return proxy | Annual volatility | Model checks | Full mandate |
-|---|---:|---:|---|---|
-| Equal weight | 4.87% | 8.80% | FAIL | FAIL |
-| Inverse volatility | 3.64% | 1.67% | FAIL | FAIL |
-| Constrained | 7.50% | 6.80% | PASS | FAIL |
+```powershell
+py -3.14 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe model.py
+.\.venv\Scripts\python.exe -m streamlit run app.py --browser.gatherUsageStats false
+```
 
-Historical snapshot dated October 30, 2026. The constrained weights are 55% SGOV, 30% VTI, 15% VXUS and 0% each for IEF and LQD. See the [draft memo](docs/decision-memo.md) for the unresolved mandate conditions.
+### Mac or Linux
 
-## Start the interactive app
-
-From the repository root on macOS or Linux:
-
-```bash
-cd Project-2
-python3 -m venv .venv
+```sh
+python3.14 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python model.py
 .venv/bin/python -m streamlit run app.py --browser.gatherUsageStats false
 ```
 
-Use Python 3.14 for the verified setup. Open the Local URL printed in the terminal, move one control and inspect the constrained portfolio verdict or infeasibility message. Use **Download this calculation snapshot** to save the displayed settings and result. Dependency installation requires internet access. The app calculations use bundled data and need no credentials.
+Open the Local URL printed in Terminal. Try the volatility limit and read the verdict at the top. The bundled data work offline after dependencies are installed. No account or credentials are required.
 
-On Aidan's Mac, the Desktop launcher `Project 2 Portfolio Trust.command` uses port 8520 and falls back to the existing Lab 19 environment. Its shell syntax has been checked.
+To run the checks, use the Python executable above with `-m unittest discover -s tests -v`, then with `tests/check_app.py`.
 
-## Working mandate — awaiting student approval
+## Executed result
 
-Five-year research horizon; 7.5% annual return objective; SGOV, IEF, LQD, VTI and VXUS; long-only; at least 10% in SGOV. Annualized sample volatility is the modeled risk measure. A 10% ceiling is an AI-proposed research assumption, not a verified client limit. Annual investor costs default to zero, an assumption exposed in the app.
+| Mix | Estimated yearly return after entered costs | Estimated yearly volatility | Numerical checks |
+|---|---:|---:|---|
+| Equal weight | 4.87% | 8.80% | Fail |
+| Inverse volatility | 3.64% | 1.67% | Fail |
+| Lowest-risk candidate | 7.50% | 6.80% | Pass |
 
-Equal weight and inverse volatility are transparent comparators. A policy benchmark is not approved. The original 7% issuer cap needs a look-through definition and Treasury exception. The original zero-realized-loss requirement cannot be guaranteed. **Full mandate verdict is FAIL while those issues remain unresolved**, even when the four numerical model checks pass. The historical arithmetic return proxy is not proof of the draft five-year compounded net objective.
-
-## Dates and sources
-
-Decision snapshot: October 30, 2026, not a current November allocation. Yahoo adjusted monthly prices: September 2021–September 2026, downloaded October 22, 2026. [Data provenance](data/price-sources.json) contains original request URLs and observations; original raw responses remain in the preserved Lab 15 folder. This standalone package includes the parsed prices and provenance, not the raw vendor responses.
-
-CPI: historical ALFRED vintage October 29, 2026, first eligible October 30 under the next-session rule. [Data card](docs/data-card.md). CPI monitors purchasing power and does not drive a trading strategy. Neither the portfolio estimates nor current adjusted prices are represented as a point-in-time backtest.
+Volatility measures how much returns tend to swing. The selected mix is 55% SGOV, 30% VTI and 15% VXUS, with 0% each for IEF and LQD. Inputs were a 7.5% return target, 10% minimum SGOV reserve, 10% volatility limit and zero entered annual costs. The portfolio uses adjusted monthly prices through September 30, 2026. The [data card](docs/data-card.md) explains the inflation release available on the October 30 decision date. Historical estimates are uncertain and monthly prices can miss losses within a month.
 
 ## Repository map
 
-- `app.py`: interactive presentation; `model.py`: integrated verdicts, scenarios, CPI and report generation.
-- `portfolio.py`: preserved Lab 15 estimation and grid-search functions. Its old standalone report is the historical training case; use `model.py` for Project 2.
-- `data/`: frozen inputs and provenance; `output/`: executed finance results.
-- `docs/decision-memo.md`: unadopted recommendation draft.
-- `docs/validation-and-ai-use.md`: evidence and AI boundary.
-- `docs/requirements-map.md`: verified requirements and gaps.
-- `docs/manifest.md`: unresolved publication/video pointers.
-- `docs/video-plan.md`: three distinct recording outlines, not transcripts.
-
-## Limits and remaining ownership
-
-No actual account holdings are verified. Tesla is not a direct security in the modeled universe; indirect fund exposure has not been measured. Fees, taxes, trading liquidity and issuer exposure require further verification. Monthly data miss intramonth drawdowns. No guaranteed return, loss protection or predictive advantage is claimed.
-
-The human AI-off changed-input prediction and run, GitHub pre-run commit, partner cold run, final decision, videos/transcripts and submission remain outstanding. Do not reuse AI-assisted development stresses as the locked record. Project 2 does not require submitted Editions A/B. See [next steps](docs/next-steps.md).
+- [App](app.py), [decision and scenario logic](model.py), [allocation engine](portfolio.py)
+- [Input files](data/), [executed output](output/results.json), [tests](tests/)
+- [Committee memo](docs/decision-memo.md), [validation and AI-use details](docs/validation-and-ai-use.md), [comparators](docs/comparator-policy.md)
+- [Requirement map](docs/requirements-map.md), [submission manifest](docs/manifest.md)

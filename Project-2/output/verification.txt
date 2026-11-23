@@ -1,26 +1,24 @@
-Project 2 development verification — November 10, 2026
+Project 2 · Automated verification · November 23, 2026
 
-Environment: existing lab-19/.venv Python. Not a fresh-install or independent partner cold run.
+test_costs_reduce_net_and_raise_required_gross (test_model.ModelTests.test_costs_reduce_net_and_raise_required_gross) ... ok
+test_empty_cpi_is_rejected (test_model.ModelTests.test_empty_cpi_is_rejected) ... ok
+test_infeasible_does_not_invent_portfolio (test_model.ModelTests.test_infeasible_does_not_invent_portfolio) ... ok
+test_known_lab15_answer_and_no_false_approval (test_model.ModelTests.test_known_lab15_answer_and_no_false_approval) ... ok
+test_missing_and_invalid_provenance_stop_model (test_model.ModelTests.test_missing_and_invalid_provenance_stop_model) ... ok
+test_risk_failure_not_hidden (test_model.ModelTests.test_risk_failure_not_hidden) ... ok
+test_sensitivity_grid_center_and_invalid_cells (test_model.ModelTests.test_sensitivity_grid_center_and_invalid_cells) ... ok
+test_vintage_gate_and_same_vintage_calculation (test_model.ModelTests.test_vintage_gate_and_same_vintage_calculation) ... ok
 
-python model.py: exit 0; wrote output/results.json.
-python -m unittest discover -s tests -v: five tests passed.
-python tests/check_app.py: passed app render, visible infeasibility and disconnected question-box checks.
-Streamlit AppTest emitted bare-mode warning and Arrow CPU-cache sandbox warnings; completed successfully.
-No screenshot or browser visual inspection claimed.
+----------------------------------------------------------------------
+Ran 8 tests in 0.510s
 
-Base full-window calculation:
-Equal weight: return proxy 4.87%, volatility 8.80%, model FAIL.
-Inverse volatility: return proxy 3.64%, volatility 1.67%, model FAIL.
-Constrained: 55/0/0/30/15, return proxy 7.50%, volatility 6.80%, model PASS.
-Every portfolio full-mandate verdict: FAIL, unresolved mandate requirements.
-
-Development stresses (SGOV/IEF/LQD/VTI/VXUS, percentages):
-Base: 55/0/0/30/15.
-VTI estimate -1pp: 55/0/0/45/0.
-Last 36 returns: 80/0/0/10/10.
-Annual investor costs 0.50%: 50/0/0/40/10.
-Reserve floor 30%: 55/0/0/30/15 (nonbinding constraint).
-Volatility ceiling 5%: 55/0/0/30/15; model FAIL and STOP.
-
-These are AI-assisted development tests, not the student's Locked Changed-Input Record.
-No student final decision, partner run, publication, video upload or submission claimed.
+OK
+2026-11-23 10:26:30.226 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+/Users/runner/work/crossbow/crossbow/arrow/cpp/src/arrow/util/cpu_info.cc:181: IOError: sysctlbyname failed for 'hw.l1dcachesize'. Detail: [errno 1] Operation not permitted
+/Users/runner/work/crossbow/crossbow/arrow/cpp/src/arrow/util/cpu_info.cc:181: IOError: sysctlbyname failed for 'hw.l2cachesize'. Detail: [errno 1] Operation not permitted
+/Users/runner/work/crossbow/crossbow/arrow/cpp/src/arrow/util/cpu_info.cc:181: IOError: sysctlbyname failed for 'hw.l3cachesize'. Detail: [errno 1] Operation not permitted
+PASS: app renders, and both stop conditions are visible.
+Executed historical research snapshot: output/results.json
+Equal weight [0.2, 0.2, 0.2, 0.2, 0.2] return proxy 4.87% volatility 8.80% FAIL FAIL — mandate not established
+Inverse volatility [0.8472087077227654, 0.05522145704576527, 0.043179606312548545, 0.02652029536498038, 0.02786993355394046] return proxy 3.64% volatility 1.67% FAIL FAIL — mandate not established
+Constrained portfolio [0.55, 0.0, 0.0, 0.3, 0.15] return proxy 7.50% volatility 6.80% PASS FAIL — mandate not established
