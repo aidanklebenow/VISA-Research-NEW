@@ -238,7 +238,14 @@ with st.container(border=True):
             export = dict(snapshot, portfolio_size=size, one_time_trading_cost=trading_cost/100, fund_limits=fund_limits)
             st.download_button('Download Calculation Snapshot', json.dumps(export, indent=2), 'portfolio-snapshot.json')
 
-report.section(4, 'Methodology')
+report.section(4, "What's Inside Each ETF")
+st.caption('Issuer figures use their own reporting dates. Model estimates and dollar allocations use the active case.')
+with (ROOT / 'data/etf_profiles.json').open(encoding='utf-8') as source:
+    profiles = json.load(source)
+allocation = dict(zip(snapshot['tickers'], candidate['weights'])) if candidate else {}
+report.show_etf_profiles(profiles, estimates['vehicles'] if estimates else [], allocation, size)
+
+report.section(5, 'Methodology')
 points = None
 with st.container(border=True):
     flow = ('Fund Prices', 'Return and Risk Estimates', 'Mixes in 5% Steps', 'Lowest-Risk Mix', 'Rule Checks')
@@ -261,7 +268,7 @@ with st.container(border=True):
     else:
         st.caption('The chart requires a valid set of inputs.')
 
-report.section(5, 'Risk & Stress Testing')
+report.section(6, 'Risk & Stress Testing')
 
 
 @st.cache_data(show_spinner=False)
@@ -283,16 +290,18 @@ with st.container(border=True):
         loss = max(0, 2 * row['volatility'] - row['net_return_proxy']) * size if row else None
         loss_label = ('—' if loss is None else '$0 (no loss in a 2-SD year)' if loss == 0
                       else report.dollars(loss))
-        rows.append((name, description, report.mix_text(row['weights'], FUNDS) if row else 'No mix',
+        weights = row['weights'] if row else [None] * len(FUNDS)
+        allocations = [report.stress_weight_cell(weight, size) for weight in weights]
+        rows.append((name, description, *allocations,
                      report.percent(row['net_return_proxy']) if row else '—',
                      report.percent(row['volatility']) if row else '—',
                      loss_label, 'Fail' if case['stop'] else 'Pass'))
-        status[index, 6] = 'fail' if case['stop'] else 'pass'
-    report.table(['Scenario', 'What Changed', 'New Mix', 'Return', 'Volatility', '“Bad Year” Loss', 'Result'],
-                 rows, classes=status, label='Reference stress tests')
+        status[index, len(FUNDS) + 5] = 'fail' if case['stop'] else 'pass'
+    report.table(['Scenario', 'What Changed', *FUNDS, 'Return', 'Volatility', '“Bad Year” Loss', 'Result'],
+                 rows, classes=status, label='Reference stress tests', fund_headers=True)
     st.caption('The bad-year illustration subtracts twice the annual standard deviation (a measure of typical spread) from the expected return. It shows the resulting loss in dollars, floored at zero. Actual losses can be larger.')
 
-report.section(6, 'Sensitivity Analysis')
+report.section(7, 'Sensitivity Analysis')
 with st.container(border=True):
     st.caption('Sensitivity shows how the outcome changes as the return goal and volatility limit move. Other inputs follow the active case.')
     if points is not None:
@@ -314,7 +323,7 @@ with st.container(border=True):
     else:
         st.caption('The grid requires a valid set of inputs.')
 
-report.section(7, 'Client Mandate')
+report.section(8, 'Client Mandate')
 with st.container(border=True):
     st.write('The mandate is the client’s investment rulebook. This case uses an illustrative portfolio and a five-year horizon.')
     mark = report.placeholder()
@@ -328,13 +337,13 @@ with st.container(border=True):
         ('Withdrawals', mark, 'The amount and timing of cash needs affect the required reserve.'),
     ], label='Client mandate')
 
-report.section(8, 'Investment Committee Recommendation')
+report.section(9, 'Investment Committee Recommendation')
 with st.container(border=True):
     fields = ('Recommendation', 'Allocation Range', 'Key Risks', 'Reversal Trigger', 'Committee Ask')
     st.html('<div class="decision-fields">' + ''.join(
         f'<strong>{field}</strong><div>{report.placeholder()}</div>' for field in fields) + '</div>')
 
-report.section(9, 'Data Sources & Notes')
+report.section(10, 'Data Sources & Notes')
 with st.expander('Data Sources & Notes'):
     st.markdown("""
 - **Fund prices:** Yahoo Finance monthly adjusted prices from September 2021 through September 2026. Final price observation: September 30, 2026. [Yahoo terms of service](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html).
@@ -345,5 +354,5 @@ with st.expander('Data Sources & Notes'):
 """)
     if snapshot:
         st.caption(f"September 2026 inflation: {report.percent(snapshot['signal']['inflation_yoy'])} year over year. This series tracks changes in consumer prices and does not set fund weights.")
-    with st.expander('Inflation Data Card'):
+    with st.expander('Data Card'):
         st.markdown((ROOT / 'docs/data-card.md').read_text(encoding='utf-8'))

@@ -1,4 +1,5 @@
 """Presentation helpers for the allocation report."""
+from datetime import date
 from html import escape
 
 import plotly.graph_objects as go
@@ -35,9 +36,12 @@ def placeholder():
     return '<span class="placeholder">[AIDAN TO DECIDE]</span>'
 
 
-def table(headers, rows, *, classes=None, label=None):
+def table(headers, rows, *, classes=None, label=None, fund_headers=False):
     """Render compact, accessible tables, with markup supplied by the report."""
-    headings = ''.join(f'<th scope="col">{escape(title)}</th>' for title in headers)
+    headings = ''.join(
+        f'<th scope="col">{fund_mark(title) if fund_headers and title in FUNDS else escape(title)}</th>'
+        for title in headers
+    )
     body = []
     for i, row in enumerate(rows):
         cells = []
@@ -54,9 +58,64 @@ def fund_mark(ticker):
     return f'<span class="fund-dot" style="background:{FUNDS[ticker][2]}"></span>{ticker}'
 
 
-def mix_text(weights, names):
-    return ' / '.join(f'{ticker} {percent(weight)}'
-                      for ticker, weight in zip(names, weights) if weight > 0)
+def stress_weight_cell(weight, size):
+    if weight is None:
+        return '—'
+    tone = ' muted-weight' if weight == 0 else ''
+    return (f'<span class="stress-weight{tone}">{percent(weight)}'
+            f'<small>{dollars(size * weight)}</small></span>')
+
+
+def issuer_date(value):
+    return date.fromisoformat(value).strftime('%b %d, %Y')
+
+
+def show_etf_profiles(profiles, estimates, allocation, size):
+    stats = {ticker: (gain, volatility) for ticker, gain, volatility in estimates}
+    cards = []
+    for ticker in FUNDS:
+        profile = profiles[ticker]
+        holdings = profile['holdings']
+        exposure = profile['exposure']
+        fee = profile['expense_ratio_pct']
+        fee_text = 'Not verified' if fee is None else f'{fee:.2f}%'
+        fee_date = f" · {issuer_date(profile['expense_as_of'])}" if profile['expense_as_of'] else ''
+        if holdings['count'] is None:
+            holdings_text = 'Not verified'
+        else:
+            count = f"{holdings['count']:,}"
+            holdings_text = (f'<a href="{escape(holdings["source_url"], quote=True)}">{count}</a>'
+                             if holdings.get('source_url') else count)
+            holdings_text += f" · {issuer_date(holdings['as_of'])}"
+        if exposure['items']:
+            exposure_text = ' · '.join(f'{escape(name)} {value:.2f}%'
+                                       for name, value in exposure['items'])
+            exposure_date = f" · {issuer_date(exposure['as_of'])}"
+        else:
+            exposure_text, exposure_date = 'Not verified', ''
+        gain, risk = (map(percent, stats[ticker]) if ticker in stats else ('—', '—'))
+        weight = allocation.get(ticker)
+        position = f'{percent(weight)} · {dollars(weight * size)}' if weight is not None else 'No selected mix'
+        note = (f'<p class="profile-meta">{escape(profile["note"])}</p>'
+                if profile.get('note') else '')
+        source_date = exposure['as_of'] or holdings['as_of'] or profile['expense_as_of']
+        date_label = f', as of {issuer_date(source_date)}' if source_date else ', as of Not verified'
+        cards.append(
+            f'<article class="etf-profile"><h3>{fund_mark(ticker)} · {escape(profile["name"])}</h3>'
+            f'<p class="profile-meta">{escape(profile["issuer"])} · {escape(profile["type"])}</p>'
+            f'<p>{escape(profile["description"])}</p>'
+            '<dl class="profile-facts">'
+            f'<div><dt>{escape(holdings.get("label", "Holdings"))}</dt><dd>{holdings_text}</dd></div>'
+            f'<div><dt>Expense ratio (yearly fee)</dt><dd>{fee_text}{fee_date}</dd></div>'
+            f'<div><dt>Model annual return / volatility</dt><dd>{gain} / {risk}</dd></div>'
+            f'<div><dt>Selected weight / dollars</dt><dd>{position}</dd></div></dl>'
+            f'<p><strong>{escape(exposure["label"])}{exposure_date}.</strong> {exposure_text}</p>'
+            f'<p><strong>Portfolio role.</strong> {escape(profile["role"])}</p>{note}'
+            f'<p class="profile-meta">Source: <a href="{escape(profile["source_url"], quote=True)}">'
+            f'{escape(profile["issuer"])} issuer page</a>{date_label}. '
+            f'Accessed {issuer_date(profile["accessed_on"])}.</p></article>'
+        )
+    st.html('<div class="etf-grid">' + ''.join(cards) + '</div>')
 
 
 def cap_error(limits):
@@ -140,6 +199,25 @@ h2 {{letter-spacing:-.025em;}}
 .flow span {{background:var(--pt-soft); border:1px solid var(--pt-line); border-radius:.4rem;
   padding:.4rem .58rem; font-size:.83rem; color:var(--pt-ink);}}
 .flow b {{color:var(--pt-accent);}}
+.stress-weight {{display:block; white-space:nowrap; font-weight:650;}}
+.stress-weight small {{display:block; color:var(--pt-muted); font-size:.76rem; font-weight:400;}}
+.stress-weight.muted-weight, .stress-weight.muted-weight small {{
+  color:var(--pt-muted); opacity:.72; font-weight:400;
+}}
+.etf-grid {{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem;}}
+.etf-profile {{display:flex; flex-direction:column; background:var(--pt-paper);
+  border:1px solid var(--pt-line); border-radius:.65rem; padding:1rem 1.15rem;
+  color:var(--pt-ink);}}
+.etf-profile h3 {{font-size:1.04rem; line-height:1.35; margin:0 0 .3rem; padding:0;}}
+.etf-profile p {{font-size:.89rem; line-height:1.42; margin:.37rem 0;}}
+.etf-profile .profile-meta {{color:var(--pt-muted); font-size:.77rem;}}
+.etf-profile .profile-meta:last-child {{margin-top:auto; padding-top:.45rem;}}
+.profile-facts {{display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.65rem; padding:.65rem .7rem; background:var(--pt-soft); border-radius:.35rem;
+  font-size:.81rem; margin:.45rem 0;}}
+.profile-facts dt {{color:var(--pt-muted);}}
+.profile-facts dd {{margin:0; font-weight:650;}}
+@media (max-width:1000px) {{.etf-grid {{grid-template-columns:1fr;}}}}
 .legend-chip {{display:inline-block; padding:.2rem .45rem; border-radius:.25rem;
   margin-right:.5rem; font-size:.8rem;}}
 .legend-chip.base {{box-shadow:inset 0 0 0 1px var(--pt-accent);}}

@@ -1,0 +1,68 @@
+{
+  "SGOV": {
+    "name": "iShares 0-3 Month Treasury Bond ETF",
+    "issuer": "iShares / BlackRock",
+    "type": "Treasury bills",
+    "description": "Holds U.S. Treasury bills that mature within three months. The short maturities limit exposure to changes in interest rates.",
+    "role": "Provides the cash reserve and helps dampen swings in the portfolio.",
+    "source_url": "https://www.ishares.com/us/products/314116/ishares-0-3-month-treasury-bond-etf",
+    "accessed_on": "2026-11-23",
+    "holdings": {"count": 24, "as_of": "2026-10-20", "label": "Holdings table entries", "source_url": "https://www.ishares.com/us/products/314116/sgov"},
+    "expense_ratio_pct": 0.09,
+    "expense_as_of": null,
+    "exposure": {"label": "Reported sectors", "as_of": "2026-11-20", "items": [["U.S. Treasury debt", 99.43], ["Investment company", 0.57]]},
+    "note": "The dated holdings table includes cash-classified Treasury bills. The Nov. 20 issuer summary separately reports zero holdings."
+  },
+  "IEF": {
+    "name": "iShares 7-10 Year Treasury Bond ETF",
+    "issuer": "iShares / BlackRock",
+    "type": "Treasury bonds",
+    "description": "Holds U.S. Treasury bonds with seven to ten years remaining to maturity. These bonds are more sensitive to rate changes than Treasury bills.",
+    "role": "An intermediate-term government bond option in the model's fund universe.",
+    "source_url": "https://www.ishares.com/us/products/239456/ishares-710-year-treasury-bond-etf",
+    "accessed_on": "2026-11-23",
+    "holdings": {"count": 18, "as_of": "2026-11-20"},
+    "expense_ratio_pct": 0.15,
+    "expense_as_of": null,
+    "exposure": {"label": "Reported sectors", "as_of": "2026-11-20", "items": [["Treasuries", 98.92], ["Cash and/or derivatives", 1.08]]}
+  },
+  "LQD": {
+    "name": "iShares iBoxx $ Investment Grade Corporate Bond ETF",
+    "issuer": "iShares / BlackRock",
+    "type": "Corporate bonds",
+    "description": "Holds U.S. dollar bonds issued by companies with investment-grade credit ratings. The bonds earn interest and carry both rate risk and the risk that borrowers weaken financially.",
+    "role": "A corporate bond option for income and exposure outside government debt.",
+    "source_url": "https://www.ishares.com/us/products/239566/ishares-iboxx-investment-grade-corporate-bond-etf",
+    "accessed_on": "2026-11-23",
+    "holdings": {"count": 3237, "as_of": "2026-11-20"},
+    "expense_ratio_pct": 0.14,
+    "expense_as_of": null,
+    "exposure": {"label": "Top five sectors", "as_of": "2026-11-20", "items": [["Banking", 22.44], ["Technology", 13.24], ["Healthcare", 11.85], ["Communications", 11.28], ["Energy", 7.89]]}
+  },
+  "VTI": {
+    "name": "Vanguard Morningstar Total Stock Market ETF",
+    "issuer": "Vanguard",
+    "type": "U.S. stocks",
+    "description": "Holds public companies of many sizes across the U.S. stock market. Its performance follows the broad market.",
+    "role": "Provides the main source of stock market growth in the original mix.",
+    "source_url": "https://advisors.vanguard.com/investments/products/vti/vanguard-total-stock-market-etf?source=autosugg",
+    "accessed_on": "2026-11-23",
+    "holdings": {"count": 3515, "as_of": "2026-07-31", "label": "Stocks held"},
+    "expense_ratio_pct": 0.03,
+    "expense_as_of": "2026-04-28",
+    "exposure": {"label": "Top five sectors", "as_of": "2026-07-31", "items": [["Technology", 40.01], ["Consumer discretionary", 12.40], ["Industrials", 12.28], ["Financials", 10.60], ["Health care", 9.29]]}
+  },
+  "VXUS": {
+    "name": "Vanguard Total International Stock ETF",
+    "issuer": "Vanguard",
+    "type": "International stocks",
+    "description": "Holds stocks from developed and emerging markets outside the U.S. Its returns also reflect changes in exchange rates.",
+    "role": "Spreads the stock allocation across markets outside the U.S.",
+    "source_url": "https://workplace.vanguard.com/investments/product-details/fund/3369",
+    "accessed_on": "2026-11-23",
+    "holdings": {"count": 8772, "as_of": "2026-07-31", "label": "Stocks held"},
+    "expense_ratio_pct": 0.05,
+    "expense_as_of": "2026-02-27",
+    "exposure": {"label": "Top five holdings", "as_of": "2026-07-31", "items": [["Taiwan Semiconductor", 3.99], ["Samsung Electronics", 1.78], ["ASML Holding", 1.41], ["SK hynix", 1.40], ["Tencent Holdings", 0.85]]}
+  }
+}
