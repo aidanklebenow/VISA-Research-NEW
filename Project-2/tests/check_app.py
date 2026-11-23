@@ -12,6 +12,10 @@ assert sections == [
 ]
 assert [metric.value for metric in app.metric[:3]] == ['7.5%', '6.8%', '5 of 5 Passed']
 assert len(app.get('plotly_chart')) == 2
+assert any('**Original Inputs**' in item.value and '7.5% return target' in item.value
+           and 'All five funds · no caps' in item.value for item in app.markdown)
+assert not any('active target is 7.5%' in item.value for item in app.caption)
+assert any('$0 (no loss in a 2-SD year)' in item.proto.body for item in app.get('html'))
 assert not app.toggle(key='dark_mode').value
 assert app.toggle(key='dark_mode').label == 'Light Mode'
 

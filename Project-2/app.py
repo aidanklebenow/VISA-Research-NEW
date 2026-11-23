@@ -42,10 +42,14 @@ def reset_inputs():
 with st.sidebar:
     st.header('Model Inputs')
     st.write('These are the assumptions behind every result on the page. They start at the original case; change any input and the whole page updates.')
-    st.html('<div class="original-inputs"><strong>Original inputs</strong><br>'
-            '7.5% return · 10.0% volatility limit · 10.0% SGOV reserve<br>'
-            f"{BASE['history'] or 'Unavailable'} months · $100,000 · no extra costs<br>"
-            'All five funds · no caps</div>')
+    with st.container(border=True, key='original-inputs'):
+        st.markdown(
+            '**Original Inputs**  \n'
+            f"{BASE['target']:.1f}% return target · {BASE['limit']:.1f}% volatility limit  \n"
+            f"{BASE['reserve']:.1f}% SGOV cash reserve · {BASE['history'] or 'Unavailable'} months  \n"
+            f"{report.dollars(BASE['portfolio_size'])} portfolio · no extra costs  \n"
+            'All five funds · no caps'
+        )
     st.button('Reset to Original Inputs', on_click=reset_inputs, width='stretch',
               help='Restore the original portfolio size and analytical assumptions.')
     with st.expander('01 · Client Goals', expanded=True):
@@ -184,7 +188,8 @@ report.section(2, 'Key Numbers')
 card_specs = [
     ('Expected Annual Return', report.percent(candidate['net_return_proxy']) if candidate else '—',
      'Average yearly gain after annual costs, estimated from historical prices. '
-     f'The client target is 7.5% per year; the active target is {target:.1f}%.'
+     'The client target is 7.5% per year.'
+     + (f' The active target is {target:.1f}%.' if target != BASE['target'] else '')
      + (f" The estimate is {report.dollars(size * candidate['net_return_proxy'])} a year." if candidate else '')),
     ('Volatility', report.percent(candidate['volatility']) if candidate else '—',
      'Measures how far yearly returns typically swing from the average. '
@@ -276,10 +281,12 @@ with st.container(border=True):
     for index, (name, description, case) in enumerate(zip(stress_names, descriptions, saved_stresses())):
         row = case['result']
         loss = max(0, 2 * row['volatility'] - row['net_return_proxy']) * size if row else None
+        loss_label = ('—' if loss is None else '$0 (no loss in a 2-SD year)' if loss == 0
+                      else report.dollars(loss))
         rows.append((name, description, report.mix_text(row['weights'], FUNDS) if row else 'No mix',
                      report.percent(row['net_return_proxy']) if row else '—',
                      report.percent(row['volatility']) if row else '—',
-                     report.dollars(loss) if loss is not None else '—', 'Fail' if case['stop'] else 'Pass'))
+                     loss_label, 'Fail' if case['stop'] else 'Pass'))
         status[index, 6] = 'fail' if case['stop'] else 'pass'
     report.table(['Scenario', 'What Changed', 'New Mix', 'Return', 'Volatility', '“Bad Year” Loss', 'Result'],
                  rows, classes=status, label='Reference stress tests')

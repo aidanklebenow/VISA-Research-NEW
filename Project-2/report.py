@@ -98,6 +98,11 @@ def style(dark):
 [class*="st-key-number-card-"] {{min-height:12.6rem;}}
 
 [data-testid="stMetricValue"] {{color:var(--pt-ink);}}
+[class*="st-key-number-card-"] [data-testid="stMetricValue"],
+[class*="st-key-number-card-"] [data-testid="stMetricValue"] div {{
+  white-space:normal; overflow:visible; overflow-wrap:anywhere; text-overflow:clip;
+  font-size:clamp(1.35rem, 2.6vw, 2.25rem); line-height:1.15;
+}}
 [data-testid="stVerticalBlockBorderWrapper"], [data-testid="stVerticalBlock"][style*="border"] {{
   border-color:var(--pt-line); background:var(--pt-paper);
 }}
@@ -113,8 +118,6 @@ h2 {{letter-spacing:-.025em;}}
   text-transform:uppercase; letter-spacing:.13em; font-size:.71rem;}}
 .header-note {{color:var(--pt-muted); font-size:.94rem; letter-spacing:.01em;}}
 .bottom-summary {{font-size:1.08rem; line-height:1.55;}}
-.original-inputs {{padding:.8rem; background:var(--pt-soft); border:1px solid var(--pt-line);
-  border-radius:.6rem; margin:.3rem 0; font-size:.85rem; line-height:1.55;}}
 .changed-case {{padding:.85rem 1rem; background:var(--pt-soft); color:var(--pt-ink);
   border-left:4px solid var(--pt-accent); border-radius:.35rem;}}
 .report-table {{overflow-x:auto; width:100%; margin:.35rem 0 .65rem;}}
