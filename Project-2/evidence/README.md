@@ -1,3 +1,13 @@
 # Execution evidence
 
 See the [recorded numerical results](../output/results.json), [validation record](../docs/validation-and-ai-use.md), and [Lab 20 substitute startup log](../../lab-20/partner_cold_run.md).
+
+## Fresh GitHub checkout · November 23, 2026
+
+Cloned the published p2-final branch at `c721fa9` into a new course folder. The macOS README commands created a Python 3.14 environment, installed the dependencies, reproduced the checked-in JSON without a diff, and started Streamlit. Eight model tests and the Streamlit app test passed in that environment.
+
+- [Overview](cold-clone-overview.png) shows the 7.50% estimate, 6.80% volatility, and research-only decision.
+- [Risk and sensitivity](cold-clone-risk-grid.png) shows the centered grid.
+- [Risk stop](cold-clone-risk-stop.png) shows the stop verdict after raising the return target to 10% in Chrome.
+
+The Windows commands are documented from Andrew’s finding. This clean browser run used macOS. The browser check exercised the return-target control and left the cost control alone.
