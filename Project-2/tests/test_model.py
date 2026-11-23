@@ -1,8 +1,10 @@
 import sys
 import unittest
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from model import Settings, cpi_signal, run
+from model import Settings, cpi_signal, run, sensitivity_grid
 
 
 class ModelTests(unittest.TestCase):
@@ -36,6 +38,50 @@ class ModelTests(unittest.TestCase):
         signal = cpi_signal()
         self.assertEqual(signal['measured'], '2026-09-01')
         self.assertAlmostEqual(signal['inflation_yoy'], 336.298/324.245-1)
+
+    def test_sensitivity_grid_center_and_invalid_cells(self):
+        grid = sensitivity_grid()
+        self.assertEqual(grid[1]['target'], Settings.target)
+        self.assertEqual(grid[1]['cells'][1]['limit'], Settings.volatility_limit)
+        self.assertEqual(grid[1]['cells'][1]['verdict'], 'Pass')
+        self.assertEqual(grid[1]['cells'][0]['verdict'], 'Above limit')
+        self.assertTrue(all(cell['verdict'] == 'No mix' for cell in grid[-1]['cells']))
+
+    def test_missing_and_invalid_provenance_stop_model(self):
+        with TemporaryDirectory() as directory, patch('model.ROOT', Path(directory)):
+            with self.assertRaises(FileNotFoundError):
+                run()
+            data = Path(directory) / 'data'
+            data.mkdir()
+            (data / 'price-sources.json').write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'Empty source record'):
+                run()
+
+    def test_empty_cpi_is_rejected(self):
+        with TemporaryDirectory() as directory, patch('model.ROOT', Path(directory)):
+            data = Path(directory) / 'data'
+            data.mkdir()
+            (data / 'cpi-vintage-2026-10-29.csv').write_text('date,value\n')
+            with self.assertRaisesRegex(ValueError, 'vintage is empty'):
+                cpi_signal()
+
+    def test_explicit_history_matches_legacy_paths(self):
+        self.assertEqual(run(history_months=60), run())
+        self.assertEqual(run(history_months=36), run(last_36=True))
+        with self.assertRaisesRegex(ValueError, 'bundled data contain 60'):
+            run(history_months=120)
+
+    def test_exclusions_caps_and_stock_adjustments(self):
+        result = run(fund_limits={'VXUS': 0, 'SGOV': .50}, vxus_shift=.02)
+        expected = run()['estimates']['vehicles'][-1][1]
+        self.assertAlmostEqual(result['estimates']['vehicles'][-1][1], expected + .02)
+        self.assertTrue(result['feasible'])
+        for row in result['portfolios']:
+            self.assertEqual(row['weights'][-1], 0)
+        candidate = result['portfolios'][-1]
+        self.assertLessEqual(candidate['weights'][0], .50)
+        self.assertTrue(candidate['rules']['Fund maximums and exclusions respected'])
+        self.assertFalse(run(fund_limits={'SGOV': 0})['feasible'])
 
 
 if __name__ == '__main__':

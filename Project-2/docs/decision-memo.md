@@ -1,21 +1,45 @@
-AI use: OpenAI Codex assisted with code, calculations, validation and this draft. Aidan's review and ownership of the final analysis and decision are pending.
+AI use: Claude reviewed and tightened the wording of answers 6–14. OpenAI Codex assisted with software and technical validation. The analysis and decision are Aidan Klebenow’s. Education, not investment advice.
 
-Education, not investment advice.
+# Investment Committee Memo
 
-# Committee memo — DRAFT, not adopted
+## 6. Benchmark
 
-**Proposed action: pilot the process for research only; approve no client capital yet.** The intended user is a student portfolio analyst learning to make an explainable recommendation. A defensible process must expose failed rules and uncertainty as clearly as successful calculations.
+I am choosing a standard 60% stock / 40% bond balanced portfolio (60% VTI / 40% IEF, rebalanced annually) as the benchmark because it is the institutional yardstick for steady five-year growth, allowing the committee to verify whether our SGOV-anchored defensive allocation delivers its 7.5% return target with meaningfully lower drawdowns than a traditional balanced fund.
 
-As of October 30, 2026, the modeled universe is SGOV, IEF, LQD, VTI and VXUS. The five-year draft targets 7.5% annual returns and at least 10% Treasury reserves. The full-window grid solution is compared with equal weight and inverse volatility. Exact executed numbers and scenarios are in `output/results.json`; those are authoritative over any rounded draft prose.
+## 7. Risk Limit
 
-The executed Project 2 full-window mix is 55% SGOV, 30% VTI and 15% VXUS, with zero IEF/LQD. At the zero-cost default, its annual net return proxy is 7.50% and estimated annual volatility is 6.80%. The model checks pass and the full mandate verdict fails. At the same defaults, equal weight returns a 4.87% proxy at 8.80% volatility, and inverse volatility returns 3.64% at 1.67%. Both baselines fail the model return check. A shorter estimation window produced 80% SGOV, 10% VTI and 10% VXUS. These are alternative research outputs, **not an approved allocation range or mix-and-match bounds**. The final client allocation range remains unset; current requested live allocation is 0% until suitability and governance are resolved.
+A 10.0% annual volatility ceiling is the right limit because our sensitivity grid shows the lowest-risk mix that reaches a 7.5% return already carries 6.8% volatility, giving us a realistic buffer of about 3 percentage points above our baseline. I am dropping the unrealistic "zero-loss" rule, since any equity-bearing mix can post negative years, in favor of a liquidity rule requiring at least 10% in SGOV so withdrawals never force us to sell VTI at a loss.
 
-The model's strongest evidence is reproducibility and transparent sensitivity, not outperformance. The shorter sample excludes the 2022 selloff. A historical arithmetic annual mean is neither a forecast nor a demonstration of the compounded net target. Investor fees, taxes, liquidity and ETF look-through exposures require additional work. Fund expenses already affect the adjusted price series.
+## 8. Issuer Rule
 
-The CPI monitor uses an October 29 historical vintage, eligible October 30, with both year-over-year endpoints from that vintage. It monitors purchasing power; it does not forecast fund returns or change weights. No successful trading signal or backtest is claimed.
+I apply the 7% single-issuer cap on a look-through basis to underlying corporate holdings rather than at the ETF wrapper level, meaning a 30%–40% VTI position only creates roughly 2.0%–2.8% exposure to mega-caps like Apple or Nvidia and passes easily, while exempting U.S. Treasuries (SGOV and IEF) as risk-free sovereign debt.
 
-**Conditions before any client use:** approve the benchmark, risk limit, withdrawal schedule and issuer/Treasury definitions; replace any promise of zero losses with an agreed measurable risk policy; verify data and account costs; complete the independent cold run and required student evidence. The proposed 10% annual volatility ceiling remains unadopted and cannot guarantee a maximum loss.
+## 9. Withdrawals
 
-**Monitor and reversal:** review when inputs, client cash needs or constraints change; investigate material allocation changes across defensible windows. Halt model use on infeasibility, risk-limit failure, missing provenance or ineligible data. Reject or redesign the process if it cannot satisfy the clarified mandate. No automatic trading follows a model alert.
+Assuming a 4.0% annual withdrawal rate ($4,000 per year on a $100,000 account, taken quarterly), the 10% SGOV minimum reserve ($10,000) alone covers 2.5 full years of distributions, and the recommended mix actually holds $55,000 in SGOV, which covers roughly 13 years without selling any equities. Because withdrawals use about $4,000 of the expected $7,500 annual gain, the account itself is expected to grow about 3.5% per year after distributions.
 
-**Committee ask:** permit a research pilot and request the missing mandate clarifications; defer capital approval. This is an AI-assisted proposal for Aidan to accept, revise or reject. See `validation-and-ai-use.md` for the material AI uses, tests and remaining ownership record.
+## 10. Recommendation
+
+I recommend initiating the allocation now within the approved parameter bands because the mix achieves the 7.5% return hurdle at 6.8% modeled volatility, safely inside the 10% risk budget, while holding enough SGOV to fund several years of withdrawals.
+
+## 11. Allocation Range
+
+Based on how weights shift across our stress tests, the approved target bands should be SGOV 50%–65%, VTI 25%–45%, VXUS 0%–15%, IEF 0%–10%, and LQD 0%–10% (VXUS at 0% under a domestic-only mandate).
+
+## 12. Key Risks
+
+The two primary risks are lookback window bias, because the 60-month estimation window (2021–2026) captured an unusually strong run for U.S. stocks (VTI about 13% per year), which likely overstates future returns, and the 36-month stress test shows how much the recommended mix shifts with the window chosen; and forward return compression, where lower future VTI returns or falling T-bill yields on SGOV prevent the mix from hitting its 7.5% return goal without breaching the volatility cap.
+
+## 13. Reversal Trigger
+
+If trailing 60-day realized portfolio volatility exceeds 10.0% or peak-to-trough drawdown hits −8.0%, trim VTI back to its 25% lower band and move the proceeds into SGOV, and if SGOV ever dips below 10.0% due to withdrawals, pause equity additions until SGOV is restored above the 10.0% minimum.
+
+## 14. Committee Ask
+
+I ask the committee to approve a $100,000 initial allocation within these stated percentage ranges, measured against the 60/40 benchmark, subject to quarterly rebalancing and risk-limit reviews.
+
+## Model Evidence · October 30, 2026
+
+The original model selects 55% SGOV, 30% VTI, and 15% VXUS, with 0% IEF and LQD. It estimates 7.50% return, $7,501 annual gain on $100,000, and 6.80% volatility. All five weights fall inside Aidan's stated bands. The 60/40 benchmark estimates 7.17% return and 11.51% volatility on the identical inputs. The benchmark's annual rebalancing is the policy convention. The reported figures are fixed-weight model estimates.
+
+The 36-month stress mix of 80% SGOV, 10% VTI, and 10% VXUS lies outside the SGOV and VTI bands. Numerical checks cover return, cash reserve, volatility, fund caps, and fully invested weights. Issuer look-through, cash-flow sufficiency, and live monitoring triggers require separate analysis. The model does not calculate benchmark drawdowns. [Saved scenarios](../output/results.json) · [Validation record](validation-and-ai-use.md)

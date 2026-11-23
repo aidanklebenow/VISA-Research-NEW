@@ -422,5 +422,67 @@
       },
       "stop": true
     }
+  ],
+  "sensitivity": [
+    {
+      "target": 0.05,
+      "cells": [
+        {
+          "limit": 0.05,
+          "volatility": 0.02498872395989193,
+          "verdict": "Pass"
+        },
+        {
+          "limit": 0.1,
+          "volatility": 0.02498872395989193,
+          "verdict": "Pass"
+        },
+        {
+          "limit": 0.15,
+          "volatility": 0.02498872395989193,
+          "verdict": "Pass"
+        }
+      ]
+    },
+    {
+      "target": 0.075,
+      "cells": [
+        {
+          "limit": 0.05,
+          "volatility": 0.06797580826175709,
+          "verdict": "Above limit"
+        },
+        {
+          "limit": 0.1,
+          "volatility": 0.06797580826175709,
+          "verdict": "Pass"
+        },
+        {
+          "limit": 0.15,
+          "volatility": 0.06797580826175709,
+          "verdict": "Pass"
+        }
+      ]
+    },
+    {
+      "target": 0.15,
+      "cells": [
+        {
+          "limit": 0.05,
+          "volatility": null,
+          "verdict": "No mix"
+        },
+        {
+          "limit": 0.1,
+          "volatility": null,
+          "verdict": "No mix"
+        },
+        {
+          "limit": 0.15,
+          "volatility": null,
+          "verdict": "No mix"
+        }
+      ]
+    }
   ]
 }

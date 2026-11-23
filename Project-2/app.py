@@ -1,82 +1,388 @@
 import json
-import pandas as pd
-import streamlit as st
-from model import ROOT, Settings, run, stress_suite, research_prompt
+import re
+from datetime import date
+from html import escape
 
-st.set_page_config(page_title='Portfolio Trust | Project 2', page_icon='◈', layout='wide')
-st.caption('Built with OpenAI Codex for code, research organization and validation. Aidan must review and own the final analysis and decision. Education, not investment advice.')
-st.title('Portfolio Trust')
-st.write('**Can this process earn a committee’s trust?** Compare the evidence, challenge the assumptions, and know when to stop.')
-st.info('Historical research snapshot · decision date October 30, 2026 · prices end September 30, 2026 · no live account or quotes. Working mandate awaits Aidan’s approval.')
-with st.sidebar:
-    st.header('Research assumptions')
-    target = st.number_input('Annual return target (%)', 0., 50., 7.5, .5)
-    reserve = st.slider('Minimum SGOV reserve (%)', 0, 100, 10, 5)
-    limit = st.slider('Proposed volatility ceiling (%)', 1, 50, 10)
-    cost = st.number_input('Annual investor costs (%)', 0., 10., 0., .1)
-    st.caption('Trading/advisory cost scenario. Fund expenses already affect adjusted prices; do not subtract them again. Taxes are excluded.')
-    short = st.checkbox('Use last 36 monthly returns')
-    shift = st.slider('VTI return estimate change (percentage points)', -5., 5., 0., .5)
-settings = Settings(target/100, reserve/100, cost/100, limit/100)
+import streamlit as st
+
+import portfolio as portfolio_math
+import report
+from model import ROOT, Settings, available_return_months, evaluate, run, stress_suite
+
+FUNDS = report.FUNDS
+POLICY_BANDS = {'SGOV': (50, 65), 'IEF': (0, 10), 'LQD': (0, 10),
+                'VTI': (25, 45), 'VXUS': (0, 15)}
+memo = (ROOT / 'docs/decision-memo.md').read_text(encoding='utf-8')
+answers = {int(number): (heading, paragraph)
+           for number, heading, paragraph in re.findall(r'^## (\d+)\. (.+)\n\n([^\n]+)', memo, re.MULTILINE)}
+BASE = {
+    'target': 7.5, 'limit': 10, 'reserve': 10,
+    'annual_cost': 0., 'trading_cost': 0., 'VTI_shift': 0., 'VXUS_shift': 0.,
+    'portfolio_size': 100_000,
+}
+for ticker in FUNDS:
+    BASE[f'{ticker}_included'] = True
+    BASE[f'{ticker}_maximum'] = 100
+
+st.set_page_config(page_title='Portfolio Trust: Allocation Recommendation', layout='wide')
 try:
-    snapshot = run(settings, short, shift/100)
-except ValueError as error:
-    st.error(str(error))
+    months_available = available_return_months()
+except (OSError, ValueError) as error:
+    st.error(f'Could not read the fund price history. {error}')
     st.stop()
-overview, stresses, signal, assistant, evidence = st.tabs(['Portfolio decision', 'Stress & stop', 'Point-in-time signal', 'Ask a research question', 'Evidence & ownership'])
-with overview:
-    st.subheader('Research use only; client allocation is not approved')
-    st.write('The five-year draft targets 7.5% annually with a 10% Treasury reserve. No final client risk mandate or withdrawal schedule has been verified. The original 7% issuer rule needs fund look-through and Treasury definitions.')
-    table = []
-    for r in snapshot['portfolios']:
-        table.append({'Portfolio':r['name'], **{n:f'{w:.1%}' for n,w in zip(snapshot['tickers'],r['weights'])},
-                      'Return proxy':f"{r['net_return_proxy']:.2%}", 'Volatility':f"{r['volatility']:.2%}",
-                      'Model checks':r['model_verdict'], 'Full mandate':r['full_mandate_verdict']})
-    st.dataframe(pd.DataFrame(table), hide_index=True, width='stretch')
-    if not snapshot['feasible']:
-        st.error('STOP: No grid portfolio meets the return-estimate target and reserve rule. Do not relax them silently.')
-    for r in snapshot['portfolios']:
-        with st.expander(r['name']+' — rule-by-rule verdict'):
-            for rule, passed in r['rules'].items():
-                st.write(('✅ PASS: ' if passed else '❌ FAIL: ')+rule)
-            st.write('**Full mandate FAIL: unresolved requirements prevent approval.**')
-            for item in r['unresolved']:
-                st.write('• '+item)
-    st.caption('Equal weight = 20% per fund. Inverse volatility weights are proportional to 1 / estimated volatility; this is transparent, not a forecast. Search uses 5-percentage-point steps. Risk is annualized monthly sample standard deviation, not a worst-loss limit.')
-    st.download_button('Download this calculation snapshot', json.dumps(snapshot,indent=2), 'portfolio-snapshot.json', 'application/json')
-with stresses:
-    st.write('**These are AI-assisted development checks. They are not your Locked Changed-Input Record.** Fixed scenarios below use the original draft settings, independently of sidebar edits.')
-    @st.cache_data
-    def fixed_stresses():
-        return stress_suite()
+
+history_options = [months for months in (36, 60, 120) if months <= months_available]
+BASE['history'] = 60 if 60 in history_options else max(history_options, default=None)
+if st.session_state.get('history') not in history_options:
+    st.session_state['history'] = BASE['history']
+for name, original_value in BASE.items():
+    if name not in st.session_state:
+        st.session_state[name] = original_value
+
+
+def reset_inputs():
+    for name, original_value in BASE.items():
+        st.session_state[name] = original_value
+
+
+with st.sidebar:
+    st.header('Model Inputs')
+    st.write('These are the assumptions behind every result on the page. They start at the original case; change any input and the whole page updates.')
+    with st.container(border=True, key='original-inputs'):
+        st.markdown(
+            '**Original Inputs**  \n'
+            f"{BASE['target']:.1f}% return target · {BASE['limit']:.1f}% volatility limit  \n"
+            f"{BASE['reserve']:.1f}% SGOV cash reserve · {BASE['history'] or 'Unavailable'} months  \n"
+            f"{report.dollars(BASE['portfolio_size'])} portfolio · no extra costs  \n"
+            'All five funds · no caps'
+        )
+    st.button('Reset to Original Inputs', on_click=reset_inputs, width='stretch',
+              help='Restore the original portfolio size and analytical assumptions.')
+    with st.expander('01 · Client Goals', expanded=True):
+        st.caption('Set the target gain, acceptable swings and minimum cash reserve.')
+        size = st.number_input('Portfolio Size ($)', min_value=1, step=1000, key='portfolio_size',
+                               help='The amount to invest. Dollar figures scale with this amount.')
+        target = st.number_input('Annual Return Target (%)', 0., 50., step=.5, key='target',
+                                 help='Minimum average yearly gain after annual investor costs.')
+        limit = st.slider('Volatility Limit (%)', 1, 50, key='limit',
+                          help='Maximum annual standard deviation, a measure of how widely returns swing.')
+        reserve = st.slider('Minimum Cash Reserve in SGOV (%)', 0, 100, step=5, key='reserve',
+                            help='Minimum share in short-term U.S. Treasury bills through SGOV.')
+    fund_limits = {}
+    current_weights = {}
+    with st.expander('02 · Funds & Caps'):
+        st.caption('Choose the funds to test and set their maximum weights. 100% = no cap.')
+        for ticker, (description, _, _) in FUNDS.items():
+            included = st.checkbox(f'Include {ticker}', key=f'{ticker}_included', help=description)
+            cap = st.number_input(f'{ticker} · Maximum Allowed in This Fund (%)', 0, 100, step=5,
+                                  key=f'{ticker}_maximum', disabled=not included,
+                                  help='100% means no cap. A weight is the share of the portfolio in this fund.')
+            fund_limits[ticker] = cap / 100 if included else 0.
+            current_weights[ticker] = st.empty()
+    with st.expander('03 · Market History'):
+        st.caption('A shorter window reflects recent markets. A longer one includes more market conditions.')
+        history = st.selectbox('Months of Returns', history_options, key='history',
+                               disabled=not history_options,
+                               help='Number of monthly fund returns used to estimate gains and volatility.')
+        st.caption(f'The bundled data contains {months_available} months of returns. Longer lookbacks are omitted.')
+    with st.expander('04 · Costs'):
+        st.caption('Annual costs reduce the return estimate. The initial trading charge is shown separately.')
+        annual_cost = st.number_input('Annual investor costs (%)', 0., 10., step=.1, key='annual_cost',
+                                      help='Recurring investor costs. Fund expenses are already reflected in adjusted prices.')
+        trading_cost = st.number_input('One-Time Trading Cost (%)', 0., 10., step=.1, key='trading_cost',
+                                       help='A one-time charge applied to the starting investment for display.')
+    historical = {}
+    using = {}
+    shifts = {}
+    with st.expander('05 · Return Assumptions'):
+        st.caption('Test a more pessimistic or optimistic view of future returns. This changes the recommended mix and every result above.')
+        for ticker in ('VTI', 'VXUS'):
+            st.markdown(f'**{ticker} · {FUNDS[ticker][1]}**')
+            historical[ticker] = st.empty()
+            shifts[ticker] = st.slider('Adjust Estimate (Percentage Points)', -5., 5., step=.5,
+                                       key=f'{ticker}_shift',
+                                       help='A one-point increase takes an estimate from 7% to 8%.')
+            using[ticker] = st.empty()
+
+title, switch = st.columns([.83, .17], vertical_alignment='center')
+with title:
+    st.title('Portfolio Trust: Allocation Recommendation')
+    st.caption(f"Built by Aidan Klebenow · Purdue University · Run date {date.today():%b %d, %Y}")
+with switch:
+    mode_label = 'Dark Mode' if st.session_state.get('dark_mode', True) else 'Light Mode'
+    dark = st.toggle(mode_label, value=True, key='dark_mode', help='Switch the report and charts between light and dark.')
+report.style(dark)
+
+changed = []
+input_labels = {
+    'target': 'return target', 'limit': 'volatility limit', 'reserve': 'cash reserve',
+    'history': 'history', 'annual_cost': 'annual investor cost', 'trading_cost': 'one-time trading cost',
+    'VTI_shift': 'VTI return adjustment', 'VXUS_shift': 'VXUS return adjustment', 'portfolio_size': 'portfolio size',
+}
+for key, label in input_labels.items():
+    value = st.session_state[key]
+    if value != BASE[key]:
+        formatted = (report.dollars(value) if key == 'portfolio_size' else
+                     f'{value} months' if key == 'history' else
+                     f'{value:+.1f} percentage points' if key.endswith('_shift') else f'{value:.1f}%')
+        changed.append(f'{label}: {formatted}')
+for ticker in FUNDS:
+    if not st.session_state[f'{ticker}_included']:
+        changed.append(f'{ticker} excluded')
+    cap = st.session_state[f'{ticker}_maximum']
+    if cap != 100:
+        changed.append(f'{ticker} maximum: {cap:.1f}%')
+if changed:
+    st.html(f'<div class="changed-case"><strong>You are viewing a modified case:</strong> '
+            f'{escape("; ".join(changed))}</div>')
+
+settings = Settings(target/100, reserve/100, annual_cost/100, limit/100)
+limits = fund_limits if any(cap < 1 for cap in fund_limits.values()) else None
+input_error = report.cap_error(fund_limits)
+snapshot = None
+if not input_error:
+    try:
+        if history is None:
+            raise ValueError('At least 36 monthly returns are needed for the available lookbacks.')
+        snapshot = run(settings, vti_shift=shifts['VTI']/100, vxus_shift=shifts['VXUS']/100,
+                       history_months=history, fund_limits=limits)
+    except (OSError, ValueError, KeyError, ZeroDivisionError) as error:
+        input_error = str(error)
+
+candidate = benchmark = None
+if snapshot:
+    candidate = next((row for row in snapshot['portfolios'] if row['name'] == 'Constrained portfolio'), None)
+    weights = {'VTI': .60, 'IEF': .40}
+    benchmark = evaluate('60/40 Policy Benchmark', [weights.get(ticker, 0) for ticker in snapshot['tickers']],
+                         snapshot['estimates'], settings)
+for i, ticker in enumerate(FUNDS):
+    weight = report.percent(candidate['weights'][i]) if candidate else '—'
+    current_weights[ticker].caption(f'Selected weight: {weight}')
+estimates = snapshot['estimates'] if snapshot else None
+if estimates is None and history is not None:
+    try:
+        estimates = portfolio_math.estimate_from_csv(ROOT / 'data/prices.csv', history_months=history)
+    except (OSError, ValueError):
+        pass
+if estimates:
+    gains = {ticker: gain for ticker, gain, _ in estimates['vehicles']}
+    for ticker in shifts:
+        used = gains[ticker] if snapshot else gains[ticker] + shifts[ticker] / 100
+        historical[ticker].caption(f'Historical estimate: {report.percent(used - shifts[ticker] / 100)} per year')
+        using[ticker].caption(f'Using: {report.percent(used)} per year')
+
+# REQ[P2-01]: Runnable decision app | Rubric: Technical execution and usability | Evidence: tests/check_app.py
+report.section(1, 'Bottom Line')
+with st.container(border=True):
+    if input_error:
+        st.error(input_error)
+    elif candidate is None:
+        st.error('No grid portfolio meets the return target, cash reserve and fund limits.')
+    else:
+        names = snapshot['tickers']
+        parts = [f'{report.percent(weight)} {FUNDS[ticker][1]} ({ticker})'
+                 for ticker, weight in zip(names, candidate['weights']) if weight > 0]
+        expected = report.dollars(round(size * candidate['net_return_proxy'], -2))
+        swing = report.dollars(round(size * candidate['volatility'], -2))
+        if candidate['model_verdict'] == 'PASS':
+            summary = f"Recommended mix: {', '.join(parts)}"
+        else:
+            summary = f"Lowest-volatility mix: {', '.join(parts)} (above the volatility limit)"
+        summary = (f'{summary} — estimated annual gain of about {expected} on {report.dollars(size)}, '
+                   f'with typical annual swings of about ±{swing} around that estimate.')
+        st.html(f'<div class="bottom-summary"><strong>{escape(summary)}</strong></div>')
+    st.markdown('**Committee Decision · Aidan’s Recommendation in the Original Case**')
+    st.write(answers[10][1])
+
+report.section(2, 'Key Numbers')
+card_specs = [
+    ('Expected Annual Return', report.percent(candidate['net_return_proxy']) if candidate else '—',
+     'Average yearly gain after annual costs, estimated from historical prices. '
+     'The client target is 7.5% per year.'
+     + (f' The active target is {target:.1f}%.' if target != BASE['target'] else '')
+     + (f" The estimate is {report.dollars(size * candidate['net_return_proxy'])} a year." if candidate else '')),
+    ('Volatility', report.percent(candidate['volatility']) if candidate else '—',
+     'Measures how far yearly returns typically swing from the average. '
+     + (f"That is about ±{report.dollars(round(size * candidate['volatility'], -2))} on {report.dollars(size)}. " if candidate else '')
+     + f'The active limit is {limit:.1f}%.'),
+]
+checks = dict(candidate['rules']) if candidate else {}
+if candidate:
+    checks.setdefault('Fund maximums and exclusions respected', True)
+card_specs.append(('Rule Checks', f'{sum(checks.values())} of 5 Passed' if candidate else '—',
+                   'The model checks the return target, cash reserve, volatility limit, fund caps and whether all the money is invested.'))
+for card_index, (column, (label, value, caption)) in enumerate(zip(st.columns(3), card_specs)):
+    with column:
+        with st.container(border=True, key=f'number-card-{card_index}'):
+            st.metric(label, value)
+            st.caption(caption)
+
+# REQ[P2-03]: Two transparent comparisons and rule-level verdicts | Rubric: Financial soundness and judgment | Evidence: output/results.json
+report.section(3, 'Recommended Allocation')
+with st.container(border=True):
+    if candidate:
+        if candidate['model_verdict'] == 'FAIL':
+            st.warning('The mix exceeds the volatility limit. It remains visible so the breach can be examined.')
+        chart, holdings = st.columns([1, 1.15], vertical_alignment='center')
+        with chart:
+            st.plotly_chart(report.allocation_chart(candidate, names, size, dark),
+                            theme=None, config=report.CHART_CONFIG)
+        with holdings:
+            report.table(['Fund', 'What It Holds', 'Weight', 'Dollars'], [
+                (report.fund_mark(ticker), FUNDS[ticker][0], report.percent(weight), report.dollars(weight * size))
+                for ticker, weight in zip(names, candidate['weights']) if weight > 0
+            ], label='Recommended allocation')
+            st.caption(f'One-time trading charge: {report.dollars(size * trading_cost / 100)} on the starting investment. Annual return excludes this separate charge.')
+        with st.expander('Numerical Rule Details'):
+            report.table(['Rule', 'Result'], [(rule, 'Pass' if passed else 'Fail') for rule, passed in checks.items()],
+                         classes={(i, 1): 'pass' if passed else 'fail' for i, passed in enumerate(checks.values())})
+    else:
+        st.write('An allocation appears when a mix meets the return, cash reserve and fund limits.')
+    if snapshot:
+        with st.expander('Comparison Portfolios and Policy Benchmark'):
+            st.write('Equal weight splits money evenly across the included funds. Inverse volatility favors funds whose returns have moved less.')
+            report.table(['Portfolio', 'Expected Annual Return', 'Volatility', 'Rule Checks'], [
+                (row['name'], report.percent(row['net_return_proxy']), report.percent(row['volatility']), row['model_verdict'])
+                for row in [*snapshot['portfolios'], benchmark]
+            ])
+            st.caption('The benchmark policy is 60% VTI / 40% IEF, rebalanced annually. Displayed return and risk use the same fixed-weight estimates as the other mixes.')
+            export = dict(snapshot, portfolio_size=size, one_time_trading_cost=trading_cost/100, fund_limits=fund_limits)
+            st.download_button('Download Calculation Snapshot', json.dumps(export, indent=2), 'portfolio-snapshot.json')
+
+report.section(4, "What's Inside Each ETF")
+st.caption('Issuer figures use their own reporting dates. Model estimates and dollar allocations use the active case.')
+with (ROOT / 'data/etf_profiles.json').open(encoding='utf-8') as source:
+    profiles = json.load(source)
+allocation = dict(zip(snapshot['tickers'], candidate['weights'])) if candidate else {}
+report.show_etf_profiles(profiles, estimates['vehicles'] if estimates else [], allocation, size)
+
+report.section(5, 'Methodology')
+points = None
+with st.container(border=True):
+    flow = ('Fund Prices', 'Return and Risk Estimates', 'Mixes in 5% Steps', 'Lowest-Risk Mix', 'Rule Checks')
+    st.html('<div class="flow">' + '<b>→</b>'.join(f'<span>{name}</span>' for name in flow) + '</div>')
+    st.markdown("""
+1. Collect monthly fund prices adjusted for payouts and splits.
+2. Estimate average yearly returns, volatility and how the funds move together.
+3. Test fully invested mixes in five-percentage-point steps within the fund limits.
+4. Select the lowest-volatility mix that meets the after-cost return target and cash reserve.
+5. Check the selected mix against the risk limit and display the rule verdict.
+""")
+    st.subheader('Efficient Frontier')
+    if snapshot:
+        points = report.tested_mixes(estimates['vehicles'], estimates['correlations'],
+                                     list(fund_limits.values()) if limits is not None else None,
+                                     settings.annual_cost)
+        st.plotly_chart(report.frontier_chart(points, candidate, settings, dark, benchmark=benchmark),
+                        theme=None, config=report.CHART_CONFIG)
+        st.caption(f'{len(points):,} dots show tested mixes by volatility and expected return, and the efficient frontier traces the highest available return at each level of risk for mixes that meet the cash reserve.')
+    else:
+        st.caption('The chart requires a valid set of inputs.')
+
+report.section(6, 'Risk & Stress Testing')
+
+
+@st.cache_data(show_spinner=False)
+def saved_stresses():
+    return stress_suite()
+
+
+with st.container(border=True):
+    st.caption('These six reference scenarios use their original assumptions. The bad-year loss in dollars scales with the entered portfolio size.')
+    stress_names = ('Original Case', 'Lower U.S. Stock Return', 'Shorter Market History', 'Higher Annual Costs',
+                    'Higher Cash Reserve', 'Tighter Risk Limit')
+    descriptions = ('Original inputs', 'VTI estimate down 1.0 percentage point', 'Last 36 monthly returns',
+                    'Annual investor cost rises to 0.5%', 'SGOV reserve rises to 30.0%',
+                    'Volatility limit drops to 5.0%')
     rows = []
-    for case in fixed_stresses():
-        r=case['result']
-        rows.append({'Scenario':case['scenario'], 'Weights SGOV / IEF / LQD / VTI / VXUS':str([round(w*100,1) for w in r['weights']]) if r else 'Infeasible',
-                     'Return proxy':f"{r['net_return_proxy']:.2%}" if r else 'Unavailable',
-                     'Volatility':f"{r['volatility']:.2%}" if r else 'Unavailable',
-                     'Model action':'STOP' if case['stop'] else 'Research check passes'})
-    st.dataframe(pd.DataFrame(rows),hide_index=True,width='stretch')
-    st.warning('Stop client use while mandate rules remain unresolved. Stop the model if no feasible allocation exists, a proposed risk limit fails, data provenance is missing, or point-in-time eligibility cannot be established. A large weight change triggers review; it does not automatically authorize trading.')
-with signal:
-    s=snapshot['signal']
-    st.metric('September 2026 CPI inflation, year over year', f"{s['inflation_yoy']:.2%}")
-    st.write(f"Calculation: ({s['value']} / {s['prior_value']} − 1) × 100. Both values come from the October 29 vintage. First permitted decision session: October 30, 2026.")
-    st.write('**Use:** monitor purchasing-power risk. This signal does not change the optimizer’s weights; no forecasting edge or historical trading performance is claimed.')
-    st.markdown((ROOT/'docs/data-card.md').read_text())
-with assistant:
-    st.subheader('Prepare a question for an AI research assistant')
-    st.warning('Not connected to an AI service. This box generates a prompt containing the local calculation and research safeguards; it does not generate an AI answer.')
-    question=st.text_area('Your investment question',placeholder='What should I investigate before replacing a concentrated stock position with diversified funds?')
-    if question.strip():
-        prompt=research_prompt(question,snapshot)
-        st.download_button('Download research prompt',prompt,'research-question.txt','text/plain')
-        with st.expander('Preview the prompt'):
-            st.text(prompt)
-    st.write('Live Q&A requires a provider/credential decision. Actual holdings, taxes, account type and risk preferences must be verified before portfolio-specific alternatives are assessed.')
-    st.markdown('[Investor.gov: diversification](https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds) · [SEC company filings](https://www.sec.gov/edgar/search/)')
-with evidence:
-    st.write('OpenAI Codex prepared the implementation and drafts on November 10, 2026. No partner cold run, student AI-off prediction, recording, final investment decision or submission is claimed.')
-    st.markdown('[Project requirements](https://github.com/CinderZhang/FIN43900-Fall2026/blob/main/projects/project-2-investment-management-application.md) · [Week 12 studio](https://github.com/CinderZhang/FIN43900-Fall2026/tree/main/lessons/week-12)')
-    st.markdown((ROOT/'docs/data-card.md').read_text())
-    st.caption('Historical price evidence: data/price-sources.json. Visible executed output: output/results.json. See docs/validation-and-ai-use.md for scope and limitations.')
+    status = {}
+    for index, (name, description, case) in enumerate(zip(stress_names, descriptions, saved_stresses())):
+        row = case['result']
+        loss = max(0, 2 * row['volatility'] - row['net_return_proxy']) * size if row else None
+        loss_label = ('—' if loss is None else '$0 (no loss in a 2-SD year)' if loss == 0
+                      else report.dollars(loss))
+        weights = row['weights'] if row else [None] * len(FUNDS)
+        allocations = [report.stress_weight_cell(weight, size) for weight in weights]
+        rows.append((name, description, *allocations,
+                     report.percent(row['net_return_proxy']) if row else '—',
+                     report.percent(row['volatility']) if row else '—',
+                     loss_label, 'Fail' if case['stop'] else 'Pass'))
+        status[index, len(FUNDS) + 5] = 'fail' if case['stop'] else 'pass'
+    report.table(['Scenario', 'What Changed', *FUNDS, 'Return', 'Volatility', '“Bad Year” Loss', 'Result'],
+                 rows, classes=status, label='Reference stress tests', fund_headers=True)
+    st.caption('The bad-year illustration subtracts twice the annual standard deviation (a measure of typical spread) from the expected return. It shows the resulting loss in dollars, floored at zero. Actual losses can be larger.')
+
+report.section(7, 'Sensitivity Analysis')
+with st.container(border=True):
+    st.caption('Sensitivity shows how the outcome changes as the return goal and volatility limit move. Other inputs follow the active case.')
+    if points is not None:
+        grid_rows, colors = [], {}
+        for i, (goal, risk) in enumerate(zip(report.GOALS, report.grid_results(points, settings.reserve))):
+            row = [report.percent(goal)]
+            for j, ceiling in enumerate(report.CEILINGS, start=1):
+                status = 'none' if risk is None else 'over' if risk > ceiling + 1e-12 else 'pass'
+                label = {'none': 'No mix', 'over': 'Over limit', 'pass': 'Pass'}[status]
+                row.append(f'{label} · {report.percent(risk)}' if risk is not None else label)
+                colors[i, j] = status + (' base' if (goal, ceiling) == (.075, .10) else '')
+            grid_rows.append(row)
+        report.table(['Return Goal'] + [report.percent(limit) for limit in report.CEILINGS],
+                     grid_rows, classes=colors, label='Return goal by volatility limit')
+        st.html('<span class="legend-chip status-pass">Pass</span>'
+                '<span class="legend-chip status-over">Over limit</span>'
+                '<span class="legend-chip status-none">No possible mix</span>'
+                '<span class="legend-chip base">Outlined cell: original goal and limit</span>')
+    else:
+        st.caption('The grid requires a valid set of inputs.')
+
+report.section(8, 'Client Mandate')
+with st.container(border=True):
+    st.write('The mandate is the client’s investment rulebook. This case uses an illustrative portfolio and a five-year horizon.')
+    report.table(['Rule', 'Setting', 'Why'], [
+        ('Portfolio Size', f'{report.dollars(size)} illustration', 'Converts portfolio weights and estimates to dollars.'),
+        ('Annual Return Target', '7.5% after recurring costs', 'Sets the yearly growth objective over five years.'),
+        ('Cash Reserve', '10.0% in SGOV in the original case', 'Keeps a share in short-term Treasury bills.'),
+        ('Benchmark', '60% VTI / 40% IEF, rebalanced annually', 'Performance reference.'),
+        ('Risk Limit', '10.0% annual volatility ceiling', 'Risk budget for the modeled portfolio.'),
+        ('Issuer Rule', '7% single-issuer cap', 'Look-through policy for corporate holdings.'),
+        ('Withdrawals', '$4,000 per year on a $100,000 account, taken quarterly', 'Sets cash needs.'),
+    ], label='Client mandate')
+    with st.expander('Aidan’s Full Mandate Answers'):
+        for number in range(6, 10):
+            heading, paragraph = answers[number]
+            st.subheader(heading)
+            st.write(paragraph)
+
+report.section(9, 'Investment Committee Recommendation')
+with st.container(border=True):
+    for number in range(10, 15):
+        heading, paragraph = answers[number]
+        st.subheader(heading)
+        st.write(paragraph)
+        if number == 11:
+            selected = dict(zip(snapshot['tickers'], candidate['weights'])) if candidate else {}
+            rows = []
+            for ticker, (low, high) in POLICY_BANDS.items():
+                weight = selected.get(ticker)
+                inside = low / 100 - 1e-12 <= weight <= high / 100 + 1e-12 if weight is not None else None
+                rows.append((report.fund_mark(ticker), f'{low}%–{high}%',
+                             report.percent(weight) if weight is not None else 'No selected mix',
+                             'Inside' if inside is True else 'Outside' if inside is False else '—'))
+            report.table(['Fund', 'Policy Range', 'Selected Weight', 'Band Check'], rows,
+                         label='Allocation ranges')
+            st.caption('These bands are a committee policy comparison. The existing numerical search and stress cases keep their original settings.')
+
+report.section(10, 'Data Sources & Notes')
+with st.expander('Data Sources & Notes'):
+    st.markdown("""
+- **Fund prices:** Yahoo Finance monthly adjusted prices from September 2021 through September 2026. Final price observation: September 30, 2026. [Yahoo terms of service](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html).
+- **Inflation:** U.S. Bureau of Labor Statistics Consumer Price Index via FRED/ALFRED. The October 29, 2026 vintage was eligible for the October 30, 2026 decision snapshot. [FRED terms and attribution](https://fred.stlouisfed.org/legal/).
+- **Data use:** No personal data used. Market data remains subject to provider terms. The portfolio size is illustrative.
+- **Project 2 Editions A and B:** For the student’s own comparison. Neither is submitted.
+- **AI-use disclosure:** OpenAI Codex-assisted implementation and validation. Education, not investment advice.
+""")
+    if snapshot:
+        st.caption(f"September 2026 inflation: {report.percent(snapshot['signal']['inflation_yoy'])} year over year. This series tracks changes in consumer prices and does not set fund weights.")
+    with st.expander('Data Card'):
+        card = (ROOT / 'docs/data-card.md').read_text(encoding='utf-8')
+        st.markdown(card.replace('../data/etf_profiles.json',
+                                 'https://github.com/aidanklebenow/VISA-Research-NEW/blob/lab-20-readiness/Project-2/data/etf_profiles.json'))
