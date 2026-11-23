@@ -137,7 +137,11 @@ def style(dark):
 <style>
 [data-testid="stApp"] {{{variables}; background:var(--pt-bg); color:var(--pt-ink);}}
 [data-testid="stHeader"] {{background:var(--pt-bg); color:var(--pt-ink);}}
-[data-testid="stToolbar"], footer {{display:none;}}
+footer {{display:none;}}
+/* Streamlit places the collapsed sidebar's reopen button inside its toolbar. */
+[data-testid="stToolbar"] {{visibility:hidden; pointer-events:none;}}
+[data-testid="stExpandSidebarButton"] {{visibility:visible; pointer-events:auto;}}
+[data-testid="stExpandSidebarButton"] svg {{color:var(--pt-ink);}}
 [data-testid="stAppViewContainer"], [data-testid="stMain"] {{background:var(--pt-bg);}}
 [data-testid="stSidebar"] {{background:var(--pt-paper); border-right:1px solid var(--pt-line);}}
 [data-testid="stApp"] :is(h1,h2,h3,p,label,summary,li) {{color:var(--pt-ink);}}
