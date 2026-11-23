@@ -3,7 +3,7 @@ toolbarMode = "minimal"
 
 [theme]
 base = "light"
-font = "Inter, sans-serif"
+font = "sans-serif"
 
 [theme.light]
 primaryColor = "#235b9e"

@@ -87,7 +87,16 @@ def style(dark):
 [data-testid="stSidebar"] {{background:var(--pt-paper); border-right:1px solid var(--pt-line);}}
 [data-testid="stApp"] :is(h1,h2,h3,p,label,summary,li) {{color:var(--pt-ink);}}
 [data-testid="stApp"] a {{color:var(--pt-accent);}}
-[data-testid="stCaptionContainer"] p {{color:var(--pt-muted);}}
+[data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p {{
+  color:var(--pt-muted); opacity:1;
+}}
+[data-testid="stApp"] details > summary,
+[data-testid="stApp"] details[open] > summary,
+[data-testid="stApp"] details > summary:hover {{
+  background:var(--pt-paper); color:var(--pt-ink);
+}}
+[class*="st-key-number-card-"] {{min-height:12.6rem;}}
+
 [data-testid="stMetricValue"] {{color:var(--pt-ink);}}
 [data-testid="stVerticalBlockBorderWrapper"], [data-testid="stVerticalBlock"][style*="border"] {{
   border-color:var(--pt-line); background:var(--pt-paper);
@@ -130,6 +139,7 @@ h2 {{letter-spacing:-.025em;}}
 .flow b {{color:var(--pt-accent);}}
 .legend-chip {{display:inline-block; padding:.2rem .45rem; border-radius:.25rem;
   margin-right:.5rem; font-size:.8rem;}}
+.legend-chip.base {{box-shadow:inset 0 0 0 1px var(--pt-accent);}}
 .decision-fields {{display:grid;grid-template-columns:minmax(9rem, .35fr) 1fr;gap:.65rem;align-items:center;}}
 @media(max-width:700px) {{
   [data-testid="stMainBlockContainer"] {{padding:2rem 1rem;}}
@@ -142,7 +152,7 @@ def chart_style(fig, dark, height):
     ink = '#e8effb' if dark else '#172c4b'
     fig.update_layout(template='plotly_dark' if dark else 'plotly_white',
                       paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-                      font={'family': 'Inter, sans-serif', 'color': ink},
+                      font={'family': 'Source Sans, Source Sans Pro, sans-serif', 'color': ink},
                       height=height, margin={'l': 18, 'r': 18, 't': 30, 'b': 30})
     fig.update_xaxes(showgrid=False, zeroline=False)
     fig.update_yaxes(showgrid=False, zeroline=False)

@@ -61,7 +61,7 @@ with st.sidebar:
     fund_limits = {}
     current_weights = {}
     with st.expander('02 · Funds & Caps'):
-        st.caption('Use the checkboxes to set the investment universe and 100% for no cap.')
+        st.caption('Choose the funds to test and set their maximum weights. 100% = no cap.')
         for ticker, (description, _, _) in FUNDS.items():
             included = st.checkbox(f'Include {ticker}', key=f'{ticker}_included', help=description)
             cap = st.number_input(f'{ticker} · Maximum Allowed in This Fund (%)', 0, 100, step=5,
@@ -171,10 +171,10 @@ with st.container(border=True):
         expected = report.dollars(round(size * candidate['net_return_proxy'], -2))
         swing = report.dollars(round(size * candidate['volatility'], -2))
         if candidate['model_verdict'] == 'PASS':
-            summary = f"Recommended mix: {', '.join(parts)}."
+            summary = f"Recommended mix: {', '.join(parts)}"
         else:
-            summary = f"Lowest-volatility mix: {', '.join(parts)}. It exceeds the volatility limit."
-        summary = (f'{summary} Estimated annual gain of about {expected} on {report.dollars(size)}, '
+            summary = f"Lowest-volatility mix: {', '.join(parts)} (above the volatility limit)"
+        summary = (f'{summary} — estimated annual gain of about {expected} on {report.dollars(size)}, '
                    f'with typical annual swings of about ±{swing} around that estimate.')
         st.html(f'<div class="bottom-summary"><strong>{escape(summary)}</strong></div>')
     st.html(f'Committee decision: {report.placeholder()}')
@@ -195,9 +195,9 @@ if candidate:
     checks.setdefault('Fund maximums and exclusions respected', True)
 card_specs.append(('Rule Checks', f'{sum(checks.values())} of 5 Passed' if candidate else '—',
                    'The model checks the return target, cash reserve, volatility limit, fund caps and whether all the money is invested.'))
-for column, (label, value, caption) in zip(st.columns(3), card_specs):
+for card_index, (column, (label, value, caption)) in enumerate(zip(st.columns(3), card_specs)):
     with column:
-        with st.container(border=True):
+        with st.container(border=True, key=f'number-card-{card_index}'):
             st.metric(label, value)
             st.caption(caption)
 
