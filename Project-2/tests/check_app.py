@@ -28,10 +28,11 @@ assert not app.exception, app.exception
 assert app.metric[2].value == 'FAIL'
 assert any('exceeds the risk limit' in item.value for item in app.error)
 
-app.selectbox(key='history').set_value(120).run(timeout=60)
+assert app.selectbox(key='history').options == ['36', '60']
+assert any('contains 60 months of returns' in caption.value for caption in app.caption)
+app.selectbox(key='history').set_value(36).run(timeout=60)
 assert not app.exception, app.exception
-assert any('bundled data contain 60' in item.value for item in app.error)
-assert not app.metric
+assert app.metric[0].value == '7.58%'
 app.button[0].click().run(timeout=60)
 assert not app.exception, app.exception
 assert app.selectbox(key='history').value == 60

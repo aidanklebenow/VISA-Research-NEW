@@ -31,7 +31,7 @@ python3.14 -m venv .venv
 .venv/bin/python -m streamlit run app.py --browser.gatherUsageStats false
 ```
 
-Open the Local URL printed in Terminal. Try the volatility limit and read the verdict in **The result**. The 36- and 60-month windows use the bundled prices. Selecting 120 months explains why the estimate is unavailable. The example starts at a hypothetical $100,000, and the one-time trading cost is shown separately from the annual return. The bundled data work offline after dependencies are installed. No account or credentials are required.
+Open the Local URL printed in Terminal. Try the volatility limit and read the verdict in **The result**. The lookback menu shows only windows supported by the bundled prices. The current snapshot offers 36 and 60 months. The example starts at a hypothetical $100,000, and the one-time trading cost is shown separately from the annual return. The bundled data work offline after dependencies are installed. No account or credentials are required.
 
 To run the checks, use the Python executable above with `-m unittest discover -s tests -v`, then with `tests/check_app.py`.
 

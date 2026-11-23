@@ -18,6 +18,14 @@ class Settings:
     volatility_limit: float = .10  # Proposed research limit; not client approved.
 
 
+def available_return_months():
+    """Count bundled price observations, allowing one for the first return."""
+    with (ROOT / 'data/prices.csv').open(encoding='utf-8-sig', newline='') as source:
+        prices = csv.reader(source)
+        next(prices, None)
+        return max(0, sum(bool(row) for row in prices) - 1)
+
+
 # REQ[P2-04]: Date-gated inflation signal | Rubric: Data integrity and traceability | Evidence: test_vintage_gate_and_same_vintage_calculation
 def cpi_signal(as_of=AS_OF):
     if date.fromisoformat(as_of) < date(2026, 10, 30):

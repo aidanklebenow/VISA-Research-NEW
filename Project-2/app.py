@@ -3,7 +3,8 @@ import json
 import pandas as pd
 import streamlit as st
 
-from model import ROOT, Settings, research_prompt, run, sensitivity_grid, stress_suite
+from model import (ROOT, Settings, available_return_months, research_prompt, run,
+                   sensitivity_grid, stress_suite)
 
 FUNDS = {
     'SGOV': 'Short-term U.S. Treasury bills',
@@ -13,7 +14,7 @@ FUNDS = {
     'VXUS': 'Stocks outside the U.S.',
 }
 BASE = {
-    'target': 7.5, 'limit': 10, 'reserve': 10, 'history': 60,
+    'target': 7.5, 'limit': 10, 'reserve': 10,
     'annual_cost': 0., 'trading_cost': 0., 'VTI_shift': 0., 'VXUS_shift': 0.,
     'portfolio_size': 100_000,
 }
@@ -38,6 +39,16 @@ st.html("""
 [data-testid="stMain"] h2 {border-top: 1px solid #d8e4e3; margin-top: 1.3rem; padding-top: 1.5rem;}
 </style>
 """)
+try:
+    months_available = available_return_months()
+except (OSError, ValueError) as error:
+    st.error(f'Stop. Could not read the bundled price history. {error}')
+    st.stop()
+
+history_options = [months for months in (36, 60, 120) if months <= months_available]
+BASE['history'] = 60 if 60 in history_options else max(history_options, default=None)
+if st.session_state.get('history') not in history_options:
+    st.session_state['history'] = BASE['history']
 for name, value in BASE.items():
     if name not in st.session_state:
         st.session_state[name] = value
@@ -54,9 +65,10 @@ with st.sidebar:
 
     st.subheader('History used')
     st.caption('Choose how many past monthly changes in fund prices go into the estimates.')
-    history = st.selectbox('Months of returns', [36, 60, 120], key='history')
-    if history == 120:
-        st.caption('The bundled series contains 60 months of returns. A 120-month estimate is unavailable.')
+    history = st.selectbox('Months of returns', history_options, key='history',
+                           disabled=not history_options)
+    st.caption(f'The bundled data contains {months_available} months of returns. '
+               'Longer lookbacks are omitted.')
 
     st.subheader('Funds')
     st.caption('Include each fund you want to test. A maximum weight is the most you can put in that fund.')
@@ -87,6 +99,8 @@ limits = fund_limits if any(cap < 1 for cap in fund_limits.values()) else None
 snapshot = None
 input_error = None
 try:
+    if history is None:
+        raise ValueError('At least 36 months of returns are needed for the available lookbacks.')
     snapshot = run(settings, vti_shift=vti/100, vxus_shift=vxus/100,
                    history_months=history, fund_limits=limits)
 except (OSError, ValueError, KeyError, ZeroDivisionError) as error:
