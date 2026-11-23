@@ -4,14 +4,14 @@
 
 | ID | Requirement | Location | Evidence | Verified |
 |---|---|---|---|---|
-| P2-01 | Start and operate the Python web app | [app.py:165](../app.py#L165), [README](../README.md) | Automated app test and three setup commands per platform | Yes for automated app |
-| P2-02 | Own the investment rules | [Committee memo](decision-memo.md) | Aidan’s mandate fields | No |
-| P2-03 | Two comparisons, candidate and verdicts | [app.py:210](../app.py#L210) | [Executed result](../output/results.json) | Yes |
+| P2-01 | Start and operate the Python web app | [app.py:174](../app.py#L174), [README](../README.md) | Automated app test and three setup commands per platform | Yes for automated app |
+| P2-02 | Own the investment rules | [Committee memo](decision-memo.md) | Aidan’s answers 6–9 | Yes |
+| P2-03 | Two comparisons, candidate and verdicts | [app.py:220](../app.py#L220) | [Executed result](../output/results.json) | Yes |
 | P2-04 | Date-gated signal and data card | [model.py:29](../model.py#L29), [data card](data-card.md) | Vintage and empty-input tests | Yes |
 | P2-05 | Stress estimates, window, costs and constraints; show stop conditions | [model.py:106](../model.py#L106) | [Scenario output](../output/results.json) and automated app test | Yes |
-| P2-06 | Locked changed-input evidence | [Validation record](validation-and-ai-use.md) | Aidan’s prediction commit, run and diagnosis | No |
-| P2-07 | Recommendation, allocation range, monitoring and reversal rule | [Committee memo](decision-memo.md) | Aidan’s decision | No |
-| P2-08 | AI disclosure, ownership and education opening | [README](../README.md), [memo](decision-memo.md), [recording outline](video-plan.md) | Written disclosures present. Aidan confirms ownership and records openings. | No |
+| P2-06 | Locked changed-input evidence | [Validation record](validation-and-ai-use.md) | Aidan’s pre-run commit, results and screenshots | Yes |
+| P2-07 | Recommendation, allocation range, monitoring and reversal rule | [Committee memo](decision-memo.md) | Aidan’s answers 10–14 | Yes |
+| P2-08 | AI disclosure, ownership and education opening | [README](../README.md), [memo](decision-memo.md), [recording outline](video-plan.md) | Written disclosures present. Video openings are unverified. | No |
 | P2-09 | Sensitivity grid and invalid cells | [Live report](../report.py), [archived grid](../model.py#L124) | Original goal/limit match, over-limit and no-mix regression checks | Yes |
 | P2-10 | Failure validation and reproducible output | [Tests](../tests/), [verification](../output/verification.txt) | Known answer, injected source failures, cap shortfall, app stop checks and reset | Yes |
 | P2-11 | Corrected AI finding and comparator policy | [Correction log](where-i-caught-the-ai.md), [comparator policy](comparator-policy.md) | Andrew’s Windows finding and two comparison methods | Yes |

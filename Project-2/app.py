@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import date
 from html import escape
 
@@ -6,9 +7,14 @@ import streamlit as st
 
 import portfolio as portfolio_math
 import report
-from model import ROOT, Settings, available_return_months, run, stress_suite
+from model import ROOT, Settings, available_return_months, evaluate, run, stress_suite
 
 FUNDS = report.FUNDS
+POLICY_BANDS = {'SGOV': (50, 65), 'IEF': (0, 10), 'LQD': (0, 10),
+                'VTI': (25, 45), 'VXUS': (0, 15)}
+memo = (ROOT / 'docs/decision-memo.md').read_text(encoding='utf-8')
+answers = {int(number): (heading, paragraph)
+           for number, heading, paragraph in re.findall(r'^## (\d+)\. (.+)\n\n([^\n]+)', memo, re.MULTILINE)}
 BASE = {
     'target': 7.5, 'limit': 10, 'reserve': 10,
     'annual_cost': 0., 'trading_cost': 0., 'VTI_shift': 0., 'VXUS_shift': 0.,
@@ -143,9 +149,12 @@ if not input_error:
     except (OSError, ValueError, KeyError, ZeroDivisionError) as error:
         input_error = str(error)
 
-candidate = None
+candidate = benchmark = None
 if snapshot:
     candidate = next((row for row in snapshot['portfolios'] if row['name'] == 'Constrained portfolio'), None)
+    weights = {'VTI': .60, 'IEF': .40}
+    benchmark = evaluate('60/40 Policy Benchmark', [weights.get(ticker, 0) for ticker in snapshot['tickers']],
+                         snapshot['estimates'], settings)
 for i, ticker in enumerate(FUNDS):
     weight = report.percent(candidate['weights'][i]) if candidate else '—'
     current_weights[ticker].caption(f'Selected weight: {weight}')
@@ -182,7 +191,8 @@ with st.container(border=True):
         summary = (f'{summary} — estimated annual gain of about {expected} on {report.dollars(size)}, '
                    f'with typical annual swings of about ±{swing} around that estimate.')
         st.html(f'<div class="bottom-summary"><strong>{escape(summary)}</strong></div>')
-    st.html(f'Committee decision: {report.placeholder()}')
+    st.markdown('**Committee Decision · Aidan’s Recommendation in the Original Case**')
+    st.write(answers[10][1])
 
 report.section(2, 'Key Numbers')
 card_specs = [
@@ -229,12 +239,13 @@ with st.container(border=True):
     else:
         st.write('An allocation appears when a mix meets the return, cash reserve and fund limits.')
     if snapshot:
-        with st.expander('Two Comparison Portfolios'):
+        with st.expander('Comparison Portfolios and Policy Benchmark'):
             st.write('Equal weight splits money evenly across the included funds. Inverse volatility favors funds whose returns have moved less.')
             report.table(['Portfolio', 'Expected Annual Return', 'Volatility', 'Rule Checks'], [
                 (row['name'], report.percent(row['net_return_proxy']), report.percent(row['volatility']), row['model_verdict'])
-                for row in snapshot['portfolios']
+                for row in [*snapshot['portfolios'], benchmark]
             ])
+            st.caption('The benchmark policy is 60% VTI / 40% IEF, rebalanced annually. Displayed return and risk use the same fixed-weight estimates as the other mixes.')
             export = dict(snapshot, portfolio_size=size, one_time_trading_cost=trading_cost/100, fund_limits=fund_limits)
             st.download_button('Download Calculation Snapshot', json.dumps(export, indent=2), 'portfolio-snapshot.json')
 
@@ -262,7 +273,7 @@ with st.container(border=True):
         points = report.tested_mixes(estimates['vehicles'], estimates['correlations'],
                                      list(fund_limits.values()) if limits is not None else None,
                                      settings.annual_cost)
-        st.plotly_chart(report.frontier_chart(points, candidate, settings, dark),
+        st.plotly_chart(report.frontier_chart(points, candidate, settings, dark, benchmark=benchmark),
                         theme=None, config=report.CHART_CONFIG)
         st.caption(f'{len(points):,} dots show tested mixes by volatility and expected return, and the efficient frontier traces the highest available return at each level of risk for mixes that meet the cash reserve.')
     else:
@@ -326,22 +337,39 @@ with st.container(border=True):
 report.section(8, 'Client Mandate')
 with st.container(border=True):
     st.write('The mandate is the client’s investment rulebook. This case uses an illustrative portfolio and a five-year horizon.')
-    mark = report.placeholder()
     report.table(['Rule', 'Setting', 'Why'], [
         ('Portfolio Size', f'{report.dollars(size)} illustration', 'Converts portfolio weights and estimates to dollars.'),
         ('Annual Return Target', '7.5% after recurring costs', 'Sets the yearly growth objective over five years.'),
         ('Cash Reserve', '10.0% in SGOV in the original case', 'Keeps a share in short-term Treasury bills.'),
-        ('Benchmark', mark, 'Sets a reference against which to judge performance.'),
-        ('Risk Limit', mark, 'The model starts at 10.0% volatility. The client risk policy requires a decision.'),
-        ('Issuer Rule', mark, 'The original 7.0% cap limits exposure to the same issuer across holdings.'),
-        ('Withdrawals', mark, 'The amount and timing of cash needs affect the required reserve.'),
+        ('Benchmark', '60% VTI / 40% IEF, rebalanced annually', 'Performance reference.'),
+        ('Risk Limit', '10.0% annual volatility ceiling', 'Risk budget for the modeled portfolio.'),
+        ('Issuer Rule', '7% single-issuer cap', 'Look-through policy for corporate holdings.'),
+        ('Withdrawals', '$4,000 per year on a $100,000 account, taken quarterly', 'Sets cash needs.'),
     ], label='Client mandate')
+    with st.expander('Aidan’s Full Mandate Answers'):
+        for number in range(6, 10):
+            heading, paragraph = answers[number]
+            st.subheader(heading)
+            st.write(paragraph)
 
 report.section(9, 'Investment Committee Recommendation')
 with st.container(border=True):
-    fields = ('Recommendation', 'Allocation Range', 'Key Risks', 'Reversal Trigger', 'Committee Ask')
-    st.html('<div class="decision-fields">' + ''.join(
-        f'<strong>{field}</strong><div>{report.placeholder()}</div>' for field in fields) + '</div>')
+    for number in range(10, 15):
+        heading, paragraph = answers[number]
+        st.subheader(heading)
+        st.write(paragraph)
+        if number == 11:
+            selected = dict(zip(snapshot['tickers'], candidate['weights'])) if candidate else {}
+            rows = []
+            for ticker, (low, high) in POLICY_BANDS.items():
+                weight = selected.get(ticker)
+                inside = low / 100 - 1e-12 <= weight <= high / 100 + 1e-12 if weight is not None else None
+                rows.append((report.fund_mark(ticker), f'{low}%–{high}%',
+                             report.percent(weight) if weight is not None else 'No selected mix',
+                             'Inside' if inside is True else 'Outside' if inside is False else '—'))
+            report.table(['Fund', 'Policy Range', 'Selected Weight', 'Band Check'], rows,
+                         label='Allocation ranges')
+            st.caption('These bands are a committee policy comparison. The existing numerical search and stress cases keep their original settings.')
 
 report.section(10, 'Data Sources & Notes')
 with st.expander('Data Sources & Notes'):
@@ -355,4 +383,6 @@ with st.expander('Data Sources & Notes'):
     if snapshot:
         st.caption(f"September 2026 inflation: {report.percent(snapshot['signal']['inflation_yoy'])} year over year. This series tracks changes in consumer prices and does not set fund weights.")
     with st.expander('Data Card'):
-        st.markdown((ROOT / 'docs/data-card.md').read_text(encoding='utf-8'))
+        card = (ROOT / 'docs/data-card.md').read_text(encoding='utf-8')
+        st.markdown(card.replace('../data/etf_profiles.json',
+                                 'https://github.com/aidanklebenow/VISA-Research-NEW/blob/lab-20-readiness/Project-2/data/etf_profiles.json'))

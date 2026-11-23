@@ -2,14 +2,14 @@ AI use: OpenAI Codex assisted with software, validation, and documentation. Educ
 
 # Portfolio Trust
 
-Portfolio Trust helps a portfolio analyst and an investment committee decide whether a way of splitting money across five funds is worth using. It compares three mixes, estimates how much each might earn and how much its value might swing, and shows which rules each mix passes. The October 30, 2026 example passes its numerical checks for one mix. Client approval is withheld while the investment rules are unresolved.
+Portfolio Trust helps a portfolio analyst and an investment committee decide whether a way of splitting money across five funds is worth using. It compares three mixes, estimates how much each might earn and how much its value might swing, and shows which rules each mix passes. The October 30, 2026 example passes its numerical checks for one mix. Aidan’s recommendation and client policies are recorded in the committee memo.
 
 ## Start here
 
 Install Python 3.14 and Git. Clone and open this project:
 
 ```sh
-git clone --branch p2-final https://github.com/aidanklebenow/VISA-Research-NEW.git
+git clone --branch lab-20-readiness https://github.com/aidanklebenow/VISA-Research-NEW.git
 cd VISA-Research-NEW/Project-2
 ```
 
@@ -42,8 +42,9 @@ To run the checks, use the Python executable above with `-m unittest discover -s
 | Equal weight | 4.87% | 8.80% | Fail |
 | Inverse volatility | 3.64% | 1.67% | Fail |
 | Lowest-risk candidate | 7.50% | 6.80% | Pass |
+| 60/40 policy benchmark | 7.17% | 11.51% | Fail |
 
-Volatility measures how much returns tend to swing. The selected mix is 55% SGOV, 30% VTI and 15% VXUS, with 0% each for IEF and LQD. Inputs were a 7.5% return target, 10% minimum SGOV reserve, 10% volatility limit and zero entered annual costs. The portfolio uses adjusted monthly prices through September 30, 2026. The [data card](docs/data-card.md) explains the inflation release available on the October 30 decision date. Historical estimates are uncertain and monthly prices can miss losses within a month.
+Volatility measures how much returns tend to swing. The selected mix is 55% SGOV, 30% VTI and 15% VXUS, with 0% each for IEF and LQD. Inputs were a 7.5% return target, 10% minimum SGOV reserve, 10% volatility limit and zero entered annual costs. The portfolio uses adjusted monthly prices through September 30, 2026. The [data card](docs/data-card.md) explains the inflation release available on the October 30 decision date. The original estimate is $7,501 a year on the $100,000 example. All five weights are within Aidan’s [allocation bands](docs/decision-memo.md#11-allocation-range). The 60/40 benchmark uses 60% VTI and 40% IEF. Annual rebalancing is its policy convention, while this table reports fixed-weight estimates. Historical estimates are uncertain and monthly prices can miss losses within a month.
 
 ## Repository map
 

@@ -1,9 +1,11 @@
-# Recording outline
+# Video Evidence
 
-Open each webcam recording with your AI-use and ownership statement and “Education, not investment advice.”
+The Project 2 brief requires three separate webcam recordings with AI-use, ownership, and education statements at the opening.
 
-1. **3:00 · Research and AI-output check.** Explain how the app and your thinking changed. Show one AI output you actually checked and what you did with it.
-2. **5:00 · Code and validation.** Follow the README, explain the data and key functions, and show one test or failure that matters to the decision.
-3. **5:00 · Committee defense.** Open with the app running live. State your action, range, evidence, risks, monitoring and reversal condition, and end with your committee ask.
+| Recording | Limit | Evidence |
+|---|---:|---|
+| Research and AI-output check | 3:00 | How the system and Aidan’s thinking changed, one AI output tested, and what happened after that check. |
+| Code and validation | 5:00 | README reproduction, data flow, key functions, a decision-relevant test, and a failure mode. |
+| Committee defense | 5:00 | Live app demonstration, recommendation, allocation range, evidence, risk, reversal condition, and committee ask. |
 
-Upload each separately as Unlisted with captions. Use the actual recording to correct and timestamp each transcript. Add the viewing links, actual durations and evidence timestamps to the manifest.
+The recordings are submitted as Unlisted YouTube links. Corrected transcripts use the actual recording and preserve evidence timestamps. [Submission manifest](manifest.md)

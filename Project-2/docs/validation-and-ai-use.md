@@ -4,7 +4,7 @@
 
 The main claim is that the selected mix has the lowest estimated volatility among the tested mixes that meet the return and SGOV reserve requirements. The search tests portfolio weights in steps of five percentage points. The volatility ceiling is checked after selection. The model displays the least-volatile candidate and stops if it breaches the ceiling. If no mix meets return and reserve, the two comparators remain available.
 
-Annual investor cost is subtracted once from the estimated gross return. The search uses the net return target plus annual investor cost as its gross hurdle. The displayed return is an arithmetic historical estimate, with no guarantee of compounded growth. The full client mandate requires benchmark, issuer, risk, and withdrawal decisions.
+Annual investor cost is subtracted once from the estimated gross return. The search uses the net return target plus annual investor cost as its gross hurdle. The displayed return is an arithmetic historical estimate, with no guarantee of compounded growth. The decision memo records Aidan’s benchmark, issuer, risk, and withdrawal policies. The numerical checks do not perform a full issuer look-through or verify cash-flow sufficiency.
 
 The snapshot is dated October 30, 2026. Prices end September 30 and were retrieved October 22. The bundled data and source records are listed in the [data card](data-card.md) and [price source file](../data/price-sources.json). The October 29 CPI vintage is first eligible October 30. The CPI monitor leaves the weights unchanged.
 
@@ -18,9 +18,11 @@ Ten model tests cover the known portfolio, a breached risk ceiling, infeasibilit
 | OpenAI Codex, Nov. 23, 2026 | Redesigned app, added the grid and input-failure checks, and revised setup and evidence documentation | Retained after model and app checks. Andrew’s Windows finding is recorded in the [correction log](where-i-caught-the-ai.md). |
 | OpenAI Codex, Nov. 17, 2026 | Ran the substitute Lab 20 startup check | The [substitute record](../../lab-20/partner_cold_run.md) documents the scope and browser limitation. |
 
-Exact backend model versions were not captured in the technical records.
+Aidan used Claude to review and tighten the wording of his answers 6–14. The memo and app reproduce the supplied answers verbatim. Exact backend model versions were not captured in the technical records.
 
-## Locked changed-input record · Aidan
+## Locked Changed-Input Record
+
+Aidan reports writing and locking the five prediction answers with AI closed.
 
 Only the header time line was removed after locking; the five prediction answers are unchanged from 0de8dab.
 
@@ -28,6 +30,6 @@ Only the header time line was removed after locking; the five prediction answers
 - [Results and actual decision effect](https://github.com/aidanklebenow/VISA-Research-NEW/blob/0519c6154cab2a9b2deef213ce7fa5532065df37/lab-20/prediction-2.md) were committed November 23, 2026, at 4:32:29 p.m. ET.
 - Aidan's screenshots: [before, original case](../evidence/locked-record/prediction-2-before.png) and [after, no qualifying mix](../evidence/locked-record/prediction-2-after.png). The 60% SGOV reserve input is documented in the written record.
 
-## Personal check of a material AI output · Aidan
+## Review and Benchmark Verification
 
-- Claim, check performed, and what you accepted or corrected: ___
+[Aidan’s report corrections and Andrew’s Windows finding](where-i-caught-the-ai.md) document material checks. The original portfolio estimates 7.50% return and 6.80% volatility, or $7,501 a year on $100,000. The 60% VTI / 40% IEF policy benchmark estimates 7.17% return and 11.51% volatility on the same data and settings. The app measures fixed-weight return and volatility. It does not backtest annual rebalancing or comparative drawdowns.

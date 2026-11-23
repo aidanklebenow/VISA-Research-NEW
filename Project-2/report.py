@@ -32,10 +32,6 @@ def section(number, title):
     st.header(title, anchor=title.lower().replace(' & ', '-').replace(' ', '-'))
 
 
-def placeholder():
-    return '<span class="placeholder">[AIDAN TO DECIDE]</span>'
-
-
 def table(headers, rows, *, classes=None, label=None, fund_headers=False):
     """Render compact, accessible tables, with markup supplied by the report."""
     headings = ''.join(
@@ -191,9 +187,6 @@ h2 {{letter-spacing:-.025em;}}
 .report-table .over, .status-over {{background:var(--pt-caution-bg); color:var(--pt-caution);}}
 .report-table .none, .status-none {{background:var(--pt-soft); color:var(--pt-muted);}}
 .report-table .base {{box-shadow:inset 0 0 0 2px var(--pt-accent); font-weight:750;}}
-.placeholder {{display:inline-block; border:1px dashed var(--pt-accent);
-  background:var(--pt-soft); color:var(--pt-accent); padding:.22rem .42rem; border-radius:.25rem;
-  font-size:.76rem; font-weight:700; white-space:nowrap;}}
 .fund-dot {{display:inline-block;width:.68rem;height:.68rem;border-radius:50%;margin-right:.42rem;}}
 .flow {{display:flex;flex-wrap:wrap; gap:.45rem; align-items:center;margin:.5rem 0 1rem;}}
 .flow span {{background:var(--pt-soft); border:1px solid var(--pt-line); border-radius:.4rem;
@@ -264,7 +257,7 @@ def tested_mixes(vehicles, correlations, caps, annual_cost):
             for weights in portfolio.grid_allocations(len(vehicles), caps)]
 
 
-def frontier_chart(points, candidate, settings, dark):
+def frontier_chart(points, candidate, settings, dark, benchmark=None):
     fig = go.Figure()
     fig.add_scatter(x=[point[0] for point in points], y=[point[1] for point in points],
                     mode='markers', name='Tested mixes',
@@ -285,6 +278,12 @@ def frontier_chart(points, candidate, settings, dark):
                         marker={'color': '#dc995a', 'symbol': 'diamond', 'size': 13,
                                 'line': {'color': '#172c4b', 'width': 1}},
                         hovertemplate='Selected mix<br>Volatility %{x:.1%}<br>Annual return %{y:.1%}<extra></extra>')
+    if benchmark:
+        fig.add_scatter(x=[benchmark['volatility']], y=[benchmark['net_return_proxy']],
+                        mode='markers', name='60/40 policy benchmark',
+                        marker={'color': '#a9bdd8' if dark else '#405d84',
+                                'symbol': 'square-open', 'size': 13, 'line': {'width': 2}},
+                        hovertemplate='60/40 benchmark<br>Volatility %{x:.1%}<br>Annual return %{y:.1%}<extra></extra>')
     line = '#a9bdd8' if dark else '#597390'
     fig.add_hline(y=settings.target, line={'dash': 'dot', 'color': line})
     fig.add_vline(x=settings.volatility_limit, line={'dash': 'dash', 'color': line})
