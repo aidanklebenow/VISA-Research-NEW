@@ -34,7 +34,7 @@ def cpi_signal(as_of=AS_OF):
                 role='Purchasing-power monitor only; does not alter weights or predict returns.')
 
 
-def evaluate(name, weights, estimates, settings):
+def evaluate(name, weights, estimates, settings, max_weights=None):
     vehicles, correlations = estimates['vehicles'], estimates['correlations']
     result = p.evaluate_mix(weights, vehicles, correlations, {'SGOV'})
     net = result['expected_return'] - settings.annual_cost
@@ -44,6 +44,9 @@ def evaluate(name, weights, estimates, settings):
         'SGOV reserve meets minimum': result['reserve_weight'] >= settings.reserve-1e-12,
         'Estimated volatility within proposed limit': result['volatility'] <= settings.volatility_limit+1e-12,
     }
+    if max_weights is not None:
+        rules['Fund maximums and exclusions respected'] = all(
+            weight <= cap + 1e-12 for weight, cap in zip(weights, max_weights))
     return dict(name=name, **result, net_return_proxy=net, rules=rules,
                 model_verdict='PASS' if all(rules.values()) else 'FAIL',
                 full_mandate_verdict='FAIL — mandate not established',
@@ -53,7 +56,8 @@ def evaluate(name, weights, estimates, settings):
                             'Client risk limit, benchmark and withdrawal schedule not approved'])
 
 
-def run(settings=Settings(), last_36=False, vti_shift=0):
+def run(settings=Settings(), last_36=False, vti_shift=0, *,
+        history_months=None, fund_limits=None, vxus_shift=0):
     if not (0 <= settings.reserve <= 1 and 0 <= settings.annual_cost <= 1
             and 0 < settings.volatility_limit <= 1 and 0 <= settings.target <= 1):
         raise ValueError('Invalid mandate or cost settings.')
@@ -61,16 +65,31 @@ def run(settings=Settings(), last_36=False, vti_shift=0):
         source = ROOT / 'data' / filename
         if not json.loads(source.read_text(encoding='utf-8')):
             raise ValueError(f'Empty source record: {filename}')
-    estimates = p.estimate_from_csv(ROOT / 'data/prices.csv', last_36=last_36)
-    estimates['vehicles'] = [(n, r + (vti_shift if n == 'VTI' else 0), s)
-                             for n, r, s in estimates['vehicles']]
-    names = [v[0] for v in estimates['vehicles']]
-    results = [evaluate('Equal weight', p.equal_weights(estimates['vehicles']), estimates, settings),
-               evaluate('Inverse volatility', p.inverse_volatility_weights(estimates['vehicles']), estimates, settings)]
-    best = p.lowest_risk_mix(estimates['vehicles'], estimates['correlations'],
-                            settings.target+settings.annual_cost, settings.reserve, {'SGOV'})
+    estimates = p.estimate_from_csv(ROOT / 'data/prices.csv', last_36=last_36,
+                                    history_months=history_months)
+    shifts = {'VTI': vti_shift, 'VXUS': vxus_shift}
+    vehicles = [(n, r + shifts.get(n, 0), s) for n, r, s in estimates['vehicles']]
+    estimates['vehicles'] = vehicles
+    names = [v[0] for v in vehicles]
+    limits = [fund_limits.get(name, 1) for name in names] if fund_limits is not None else None
+    if limits is not None and any(not 0 <= limit <= 1 for limit in limits):
+        raise ValueError('Fund limits must be between 0% and 100%.')
+    included = [i for i in range(len(names)) if limits is None or limits[i] > 0]
+    if not included:
+        raise ValueError('Include at least one fund with a maximum above 0%.')
+    included_vehicles = [vehicles[i] for i in included]
+    results = []
+    for label, comparator in [('Equal weight', p.equal_weights),
+                              ('Inverse volatility', p.inverse_volatility_weights)]:
+        weights = [0.] * len(names)
+        for i, weight in zip(included, comparator(included_vehicles)):
+            weights[i] = weight
+        results.append(evaluate(label, weights, estimates, settings, limits))
+    best = p.lowest_risk_mix(vehicles, estimates['correlations'],
+                            settings.target+settings.annual_cost, settings.reserve, {'SGOV'},
+                            max_weights=limits)
     if best:
-        results.append(evaluate('Constrained portfolio', best['weights'], estimates, settings))
+        results.append(evaluate('Constrained portfolio', best['weights'], estimates, settings, limits))
     return dict(as_of=AS_OF, settings=settings.__dict__, tickers=names, estimates=estimates,
                 portfolios=results, feasible=bool(best), signal=cpi_signal(),
                 status='RESEARCH ONLY — not approved for client allocation')

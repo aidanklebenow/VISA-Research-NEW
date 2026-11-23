@@ -5,141 +5,221 @@ import streamlit as st
 
 from model import ROOT, Settings, research_prompt, run, sensitivity_grid, stress_suite
 
+FUNDS = {
+    'SGOV': 'Short-term U.S. Treasury bills',
+    'IEF': 'U.S. Treasury bonds',
+    'LQD': 'Higher-rated company bonds',
+    'VTI': 'U.S. stocks',
+    'VXUS': 'Stocks outside the U.S.',
+}
+BASE = {
+    'target': 7.5, 'limit': 10, 'reserve': 10, 'history': 60,
+    'annual_cost': 0., 'trading_cost': 0., 'VTI_shift': 0., 'VXUS_shift': 0.,
+    'portfolio_size': 100_000,
+}
+for ticker in FUNDS:
+    BASE[f'{ticker}_included'] = True
+    BASE[f'{ticker}_maximum'] = 100
+
+
+def reset_inputs():
+    for name, value in BASE.items():
+        st.session_state[name] = value
+
+
+def money(amount):
+    return f'${amount:,.2f}'
+
+
 st.set_page_config(page_title='Portfolio Trust | Project 2', layout='wide')
-st.title('Portfolio Trust')
-st.caption('DECISION SNAPSHOT  /  OCTOBER 30, 2026')
+st.html("""
+<style>
+.block-container {max-width: 1050px; padding-top: 2.7rem; padding-bottom: 4rem;}
+[data-testid="stMain"] h2 {border-top: 1px solid #d8e4e3; margin-top: 1.3rem; padding-top: 1.5rem;}
+</style>
+""")
+for name, value in BASE.items():
+    if name not in st.session_state:
+        st.session_state[name] = value
 
 with st.sidebar:
-    st.header('Try different assumptions')
-    target = st.number_input('Annual return target (%)', 0., 50., 7.5, .5,
-                             help='The yearly gain you want after the costs entered here.')
-    reserve = st.slider('Minimum SGOV reserve (%)', 0, 100, 10, 5,
-                        help='The smallest share kept in SGOV, a fund holding short-term U.S. Treasury bills.')
-    limit = st.slider('Proposed volatility ceiling (%)', 1, 50, 10,
-                      help='Volatility measures how much returns tend to move around. The ceiling is the largest amount allowed by this check.')
-    cost = st.number_input('Annual investor costs (%)', 0., 10., 0., .1)
-    st.caption('Enter yearly trading or advice costs. Fund expenses already affect the price data. Taxes are excluded.')
-    short = st.checkbox('Use last 36 monthly returns')
-    shift = st.slider('VTI return estimate change (percentage points)', -5., 5., 0., .5,
-                      help='VTI is a broad U.S. stock fund. One percentage point changes 7% to 8%, for example.')
+    st.header('Inputs')
+    st.button('Reset to base case', on_click=reset_inputs)
 
-settings = Settings(target/100, reserve/100, cost/100, limit/100)
+    st.subheader('Goals')
+    st.caption('Set the yearly gain you want, how much returns may swing, and what to keep in short-term U.S. Treasury bills.')
+    target = st.number_input('Annual return target (%)', 0., 50., step=.5, key='target')
+    limit = st.slider('Proposed volatility ceiling (%)', 1, 50, key='limit')
+    reserve = st.slider('Minimum SGOV reserve (%)', 0, 100, step=5, key='reserve')
+
+    st.subheader('History used')
+    st.caption('Choose how many past monthly changes in fund prices go into the estimates.')
+    history = st.selectbox('Months of returns', [36, 60, 120], key='history')
+    if history == 120:
+        st.caption('The bundled series contains 60 months of returns. A 120-month estimate is unavailable.')
+
+    st.subheader('Funds')
+    st.caption('Include each fund you want to test. A maximum weight is the most you can put in that fund.')
+    fund_limits = {}
+    with st.expander('Choose funds and maximum weights'):
+        for ticker, description in FUNDS.items():
+            included = st.checkbox(f'Include {ticker} · {description}', key=f'{ticker}_included')
+            cap = st.number_input(f'{ticker} maximum weight (%)', 0, 100, step=5,
+                                  key=f'{ticker}_maximum', disabled=not included)
+            fund_limits[ticker] = cap / 100 if included else 0.
+
+    st.subheader('Costs')
+    st.caption('Annual costs repeat each year. The trading estimate is a separate, one-time bill on the initial investment.')
+    annual_cost = st.number_input('Annual investor costs (%)', 0., 10., step=.1, key='annual_cost')
+    trading_cost = st.number_input('One-time trading cost (%)', 0., 10., step=.1, key='trading_cost')
+
+    st.subheader('What-ifs')
+    st.caption('Change the estimated return for either stock fund. One percentage point takes 7% to 8%.')
+    vti = st.slider('VTI return estimate change (percentage points)', -5., 5., step=.5, key='VTI_shift')
+    vxus = st.slider('VXUS return estimate change (percentage points)', -5., 5., step=.5, key='VXUS_shift')
+
+    st.subheader('Portfolio size')
+    st.caption('Set the dollar amount used to translate each percentage into dollars.')
+    size = st.number_input('Portfolio size ($)', min_value=1, step=1000, key='portfolio_size')
+
+settings = Settings(target/100, reserve/100, annual_cost/100, limit/100)
+limits = fund_limits if any(cap < 1 for cap in fund_limits.values()) else None
+snapshot = None
+input_error = None
 try:
-    snapshot = run(settings, short, shift/100)
+    snapshot = run(settings, vti_shift=vti/100, vxus_shift=vxus/100,
+                   history_months=history, fund_limits=limits)
 except (OSError, ValueError, KeyError, ZeroDivisionError) as error:
-    st.error(f'Stop. The model could not verify its inputs. {error}')
-    st.stop()
+    input_error = str(error)
 
-candidate = next((row for row in snapshot['portfolios'] if row['name'] == 'Constrained portfolio'), None)
-if candidate is None:
-    st.error('Stop. No grid portfolio meets the return target and minimum reserve.')
-elif candidate['model_verdict'] == 'FAIL':
-    st.error('Stop. Even the least volatile mix that meets the return and reserve targets exceeds the risk limit.')
-else:
-    st.info('Research only. This mix passes the numerical checks. Client money stays on hold until the investment rules are settled.')
+st.title('Portfolio Trust')
+st.caption('PROJECT 2  /  HISTORICAL CASE  /  OCTOBER 30, 2026')
+st.write('Built by Aidan Klebenow, Purdue finance student. This case is for a hypothetical client who wants to grow their money over five years and keep cash available. The app tests how to split the money across five funds. It shows which mix clears the goals and when I would stop.')
 
-st.markdown('**What this app does**')
-st.write('Compare ways to split money across five funds. The app uses historical prices to estimate annual return (how much money might grow in a year after entered costs) and volatility (how much returns tend to swing). It checks whether a mix meets your targets. A technical pass alone does not establish that the mix fits a client’s needs.')
-
-return_card, risk_card, check_card = st.columns(3)
-return_card.metric('Estimated annual return', f"{candidate['net_return_proxy']:.2%}" if candidate else '—',
-                   help=f'Current target: {target:g}% after entered costs.', border=True)
-risk_card.metric(f'Volatility vs. {limit:g}% limit', f"{candidate['volatility']:.2%}" if candidate else '—',
-                 help='An annual estimate of how much returns typically fluctuate.', border=True)
-check_card.metric('Numerical checks', candidate['model_verdict'] if candidate else 'NO MIX', border=True)
+st.header('The client and the rules')
+st.write(f'The client has **{money(size)}** to invest in this example. The starting goal is **7.5% a year after annual costs** over **five years**. The starting reserve is **10% in SGOV**, a fund that holds short-term U.S. Treasury bills. A reserve is the part set aside for cash needs.')
+st.markdown("""
+- **Benchmark [AIDAN TO DECIDE].** A benchmark is the reference I use to judge performance.
+- **Risk limit [AIDAN TO DECIDE].** This example uses 10% annual volatility, which measures how much returns tend to swing. The original case also called for zero losses on investments sold during a calendar year.
+- **Issuer rule [AIDAN TO DECIDE].** The starting cap is 7% per issuer, the company or government that issued a stock or bond. Decide how to add up holdings across funds and how to treat Treasuries.
+- **Withdrawals [AIDAN TO DECIDE].** Set how much cash the client needs and when.
+""")
 
 # REQ[P2-01]: Runnable decision app | Rubric: Technical execution and usability | Evidence: tests/check_app.py
-overview, portfolio, risk, data, committee = st.tabs(
-    ['Overview', 'Portfolio', 'Risk & Stress Tests', 'Data & Sources', 'Committee Decision'])
+st.header('How it works')
+st.info('Fund prices → return and risk estimates → mixes in 5% steps → lowest-risk mix that meets the goal → rule checks')
+st.markdown("""
+1. Start with monthly fund prices that account for payouts and splits.
+2. Estimate yearly returns and how much the funds move, both alone and together.
+3. Test every split in five-percentage-point steps, subject to the fund maximums.
+4. Pick the mix with the smallest swings that meets the return target after annual costs and holds the required reserve.
+5. Check the volatility limit and show which rules passed.
+""")
 
-with overview:
-    st.subheader('How to read the result')
-    st.write('A pass means the mix clears the return target, holds enough in reserve, and stays within the volatility limit. The client decision also depends on the full mandate, meaning the rules for investing the client’s money.')
-    with st.expander('Facts behind this'):
-        st.write(f'The return target is {target:g}%, the minimum SGOV reserve is {reserve:g}%, the volatility limit is {limit:g}%, and entered annual costs are {cost:g}%. Pricing ends September 30, 2026.')
-        st.write('The search finds the lowest estimated volatility among mixes that meet return and reserve requirements. The app checks the volatility limit afterward. It shows a failing candidate when even the lowest-risk mix exceeds that limit.')
-    st.download_button('Download calculation snapshot', json.dumps(snapshot, indent=2), 'portfolio-snapshot.json', 'application/json')
+# REQ[P2-03]: Two transparent comparisons and rule-level verdicts | Rubric: Financial soundness and judgment | Evidence: output/results.json
+st.header('The result')
+candidate = None
+if snapshot:
+    candidate = next((row for row in snapshot['portfolios'] if row['name'] == 'Constrained portfolio'), None)
+if input_error:
+    st.error(f'Stop. {input_error}')
+elif candidate is None:
+    st.error('Stop. No grid portfolio meets the return target, reserve, and fund maximums.')
+elif candidate['model_verdict'] == 'FAIL':
+    st.error('Stop. Even the lowest-risk mix that meets the return and reserve targets exceeds the risk limit.')
+else:
+    st.success('The mix clears the numerical checks. Client money stays on hold until the investment rules are settled.')
 
-with portfolio:
-    # REQ[P2-03]: Two transparent comparisons and rule-level verdicts | Rubric: Financial soundness and judgment | Evidence: output/results.json
-    st.subheader('Compare three ways to split the money')
-    st.write('Equal weight splits money evenly. Inverse volatility favors funds whose returns have swung less. The constrained portfolio is the lowest-risk mix the search finds under the return and reserve rules.')
-    rows = [
-        {'Portfolio': row['name'], **{name: f'{weight:.1%}' for name, weight in zip(snapshot['tickers'], row['weights'])},
-         'Annual return': f"{row['net_return_proxy']:.2%}", 'Volatility': f"{row['volatility']:.2%}",
-         'Numerical checks': row['model_verdict'], 'Client approval': 'Withheld'}
-        for row in snapshot['portfolios']
-    ]
-    st.dataframe(pd.DataFrame(rows), hide_index=True, width='stretch')
-    with st.expander('Facts behind this'):
-        st.write('Weights are percentages of the total investment. The model searches long-only mixes (no bets on prices falling) in steps of five percentage points, with all the money assigned. The risk calculation uses how much each fund swings and how closely funds move together.')
-        for row in snapshot['portfolios']:
-            st.markdown(f"**{row['name']}**")
-            for rule, passed in row['rules'].items():
-                st.write(f"{'PASS' if passed else 'FAIL'} · {rule}")
+if candidate:
+    first, second, third = st.columns(3)
+    first.metric(f'Yearly return vs. {target:g}% goal', f"{candidate['net_return_proxy']:.2%}", border=True)
+    second.metric(f'Volatility vs. {limit:g}% limit', f"{candidate['volatility']:.2%}", border=True)
+    third.metric('Numerical checks', candidate['model_verdict'], border=True)
+    st.caption(f"Estimated yearly gain at the entered size: {money(size * candidate['net_return_proxy'])}. "
+               f"One-time trading charge on the initial investment: {money(size * trading_cost / 100)}. "
+               "The trading charge is shown separately from yearly return.")
+    st.subheader('How the money would be split')
+    allocation = pd.DataFrame([
+        {'Fund': ticker, 'Holding': description, 'Weight (%)': weight * 100, 'Dollars': size * weight}
+        for (ticker, description), weight in zip(FUNDS.items(), candidate['weights'])
+    ])
+    st.bar_chart(allocation, x='Fund', y='Dollars', horizontal=True, sort=False, height=230,
+                 alt='Dollar amounts in each of the five funds')
+    st.table(allocation.assign(**{'Weight (%)': allocation['Weight (%)'].map('{:.0f}%'.format),
+                                  'Dollars': allocation['Dollars'].map(money)}))
+    rule_names = ['All money assigned with no bets on falling prices', 'Estimated yearly gain meets target',
+                  'SGOV reserve meets minimum', 'Volatility stays within limit', 'Fund maximums and exclusions respected']
+    checks = list(candidate['rules'].values())
+    if limits is None:
+        checks.append(True)
+    st.subheader('Rule checks')
+    st.table(pd.DataFrame({'Rule': rule_names + ['Client benchmark, risk policy, issuer rule and withdrawals'],
+                           'Result': ['PASS' if passed else 'FAIL' for passed in checks] + ['[AIDAN TO DECIDE]']}))
 
-with risk:
-    st.subheader('Could a change in assumptions stop the process?')
-    st.write('Stress tests ask what happens when one assumption changes. Stop if the search finds no mix, if the lowest-risk mix breaks the risk limit, or if the source data cannot be verified.')
+if snapshot:
+    with st.expander('Compare this mix with two simpler choices'):
+        st.write('Equal weight splits the money evenly across included funds. Inverse volatility gives more money to funds that have moved less.')
+        st.table(pd.DataFrame([
+            {'Mix': row['name'], 'Yearly return': f"{row['net_return_proxy']:.2%}",
+             'Volatility': f"{row['volatility']:.2%}", 'Checks': row['model_verdict']}
+            for row in snapshot['portfolios']
+        ]))
+        export = dict(snapshot, portfolio_size=size, one_time_trading_cost=trading_cost/100, fund_limits=fund_limits)
+        st.download_button('Download calculation snapshot', json.dumps(export, indent=2), 'portfolio-snapshot.json')
 
-    @st.cache_data
-    def fixed_stresses():
-        return stress_suite()
+st.header('What could go wrong')
+st.write('Each test changes one input from the starting case. The dollar estimates use the portfolio size you enter.')
 
-    rows = []
-    for case in fixed_stresses():
-        row = case['result']
-        rows.append({'Scenario': case['scenario'], 'Annual return': f"{row['net_return_proxy']:.2%}" if row else '—',
-                     'Volatility': f"{row['volatility']:.2%}" if row else '—',
-                     'Model action': 'Stop' if case['stop'] else 'Research checks pass'})
-    st.dataframe(pd.DataFrame(rows), hide_index=True, width='stretch')
-    with st.expander('Facts behind this'):
-        st.write('These examples start from the saved base settings. The shorter price history changes which market periods are counted. Higher costs reduce the estimated gain and can require a different mix. A tighter risk limit can reject the same mix even when its estimated return stays the same.')
-        for case in fixed_stresses():
-            if case['result']:
-                weights = ', '.join(f'{name} {weight:.0%}' for name, weight in zip(snapshot['tickers'], case['result']['weights']))
-                st.write(f"{case['scenario']} · {weights}")
 
-    st.subheader('What if two settings change together?')
-    st.write('A sensitivity grid shows how the result changes when two settings move. The published base case is in the center.')
-    @st.cache_data
-    def fixed_grid():
-        return sensitivity_grid()
+@st.cache_data
+def fixed_checks():
+    return stress_suite(), sensitivity_grid()
 
-    grid = []
-    for case in fixed_grid():
-        row = {'Return target': f"{case['target']:.1%}"}
-        for cell in case['cells']:
-            heading = f"{cell['limit']:.0%} risk limit"
-            value = cell['volatility']
-            row[heading] = cell['verdict'] if value is None else f"{cell['verdict']} · {value:.2%}"
-        grid.append(row)
-    st.dataframe(pd.DataFrame(grid), hide_index=True, width='stretch')
-    with st.expander('Facts behind this'):
-        st.write('“No mix” means no tested allocation meets the return and reserve requirements. “Above limit” means the least volatile mix that meets those requirements still breaks the risk limit. A higher return target can force more stock exposure. A lower risk limit can reject a mix without changing its weights.')
 
-with data:
-    st.subheader('Historical prices and inflation')
-    st.write('Inflation is the rise in prices over time. The Consumer Price Index (CPI) tracks a basket of household goods and services.')
-    signal = snapshot['signal']
-    st.metric('September 2026 inflation vs. a year earlier', f"{signal['inflation_yoy']:.2%}")
-    with st.expander('Facts behind this'):
-        st.write('A vintage is a saved version of a data release. This calculation uses the same October 29 vintage for both months. The first eligible decision date is October 30. The signal helps monitor purchasing power and leaves portfolio weights unchanged.')
-        st.write('Price estimates use bundled monthly adjusted prices. Adjusted prices account for changes such as distributions and splits. Historical averages can change with the sample and cannot guarantee a future return.')
-        st.markdown((ROOT / 'docs/data-card.md').read_text(encoding='utf-8'))
+stresses, grid = fixed_checks()
+causes = [
+    'The starting mix sets the comparison',
+    'If the U.S. stock fund earns one percentage point less, the mix changes to try to reach the same goal',
+    'Using only the latest 36 months changes which market swings count',
+    'Higher yearly costs change the mix needed to meet the goal',
+    'Raising the reserve floor to 30% leaves the starting mix alone',
+    'A 5% risk limit rejects the starting mix',
+]
+for cause, case in zip(causes, stresses):
+    result = case['result']
+    if result:
+        st.write(f"• {cause} — {money(size * result['net_return_proxy'])} estimated gain per year and "
+                 f"{result['volatility']:.2%} volatility.")
+    else:
+        st.write(f'• {cause} — no mix meets the rules.')
 
-with committee:
-    st.subheader('Client approval is withheld')
-    st.write('Before committing client money, settle how to judge performance, how much risk is acceptable, how much can be invested with one issuer, and when the client needs cash.')
-    with st.expander('Facts behind this'):
-        st.write('A benchmark is the reference used to judge performance. An issuer is the organization behind a stock or bond. An issuer limit may have to count holdings across multiple funds.')
-        st.markdown('**Human-owned decisions and evidence**')
-        st.write('Benchmark: ___  ·  Risk limit: ___  ·  Issuer rule: ___  ·  Withdrawals: ___')
-        st.write('Committee action, allocation range, and reversal trigger: ___')
-        st.write('AI-off prediction commit, run, and diagnosis: ___')
-    with st.expander('Prepare a research question'):
-        st.caption('Creates a downloadable prompt. No AI service is connected.')
-        question = st.text_area('Your investment question')
+st.subheader('Sensitivity grid')
+st.write('The grid shows what happens when the return goal and risk limit change together. The starting case is in the middle.')
+grid_rows = []
+for case in grid:
+    row = {'Yearly return goal': f"{case['target']:.1%}"}
+    for cell in case['cells']:
+        value = cell['volatility']
+        label = cell['verdict']
+        row[f"{cell['limit']:.0%} risk limit"] = label if value is None else f'{label} · {value:.2%}'
+    grid_rows.append(row)
+st.table(pd.DataFrame(grid_rows))
+
+st.header('The decision')
+st.info('**[AIDAN TO DECIDE]**\n\nRecommendation and committee ask: ___  \n'
+        'Allocation range: ___  \nRisks to watch: ___  \n'
+        'Reversal trigger (what would make me change my recommendation): ___')
+
+with st.expander('Data and sources'):
+    if snapshot:
+        signal = snapshot['signal']
+        st.write(f"September 2026 inflation was {signal['inflation_yoy']:.2%} versus a year earlier. Inflation is the rise in prices. "
+                 "The Consumer Price Index (CPI) tracks how the price of a basket of goods and services changes.")
+    st.write('The bundled monthly fund prices end September 30, 2026. The October 29 version of the inflation release was first usable October 30 and leaves the fund weights alone. Historical results help compare mixes. Future gains and losses can differ.')
+    st.markdown((ROOT / 'docs/data-card.md').read_text(encoding='utf-8'))
+    if snapshot:
+        question = st.text_area('Optional research question')
         if question.strip():
             st.download_button('Download research prompt', research_prompt(question, snapshot),
                                'research-question.txt', 'text/plain')
+st.caption('AI use: OpenAI Codex assisted with software and validation. Education, not investment advice.')

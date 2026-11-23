@@ -121,7 +121,7 @@ def baseline_weights(vehicles):
 
 
 def lowest_risk_mix(vehicles, correlations, objective=OBJECTIVE,
-                    reserve_minimum=0.03, reserve_eligible=None):
+                    reserve_minimum=0.03, reserve_eligible=None, max_weights=None):
     """Exhaust every long-only allocation on a 5-percentage-point grid.
 
     Returns weights and calculated metrics, or None when infeasible.
@@ -138,6 +138,11 @@ def lowest_risk_mix(vehicles, correlations, objective=OBJECTIVE,
     if eligible - {v[0] for v in vehicles}:
         raise ValueError('Reserve eligibility contains an unknown asset.')
 
+    if max_weights is not None and (
+        len(max_weights) != len(vehicles) or any(not 0 <= cap <= 1 for cap in max_weights)
+    ):
+        raise ValueError('Supply a maximum share between 0% and 100% for each fund.')
+
     def allocations(remaining, count):
         # Twenty units of 5% must be assigned, so every mix sums to 100%.
         if count == 1:
@@ -149,6 +154,8 @@ def lowest_risk_mix(vehicles, correlations, objective=OBJECTIVE,
 
     best = None
     for weights in allocations(20, len(vehicles)):
+        if max_weights is not None and any(w > cap + 1e-12 for w, cap in zip(weights, max_weights)):
+            continue
         result = expected_return(weights, vehicles)
         reserve = sum(w for w, asset in zip(weights, vehicles) if asset[0] in eligible)
         if not meets_objective(result, objective) or reserve < reserve_minimum - 1e-12:
@@ -160,7 +167,7 @@ def lowest_risk_mix(vehicles, correlations, objective=OBJECTIVE,
     return best
 
 
-def estimate_from_csv(source, last_36=False):
+def estimate_from_csv(source, last_36=False, *, history_months=None):
     """Read monthly adjusted prices; estimate annual mean, sample risk, correlation.
 
     Accepts a path or an uploaded text/binary file. Rejects missing data instead
@@ -200,7 +207,10 @@ def estimate_from_csv(source, last_36=False):
                for previous, current in zip(prices, prices[1:])]
     if last_36 and len(returns) < 36:
         raise ValueError('The last-36-months estimate needs at least 37 monthly prices.')
-    selected = returns[-36:] if last_36 else returns
+    if history_months is not None and (history_months < 2 or len(returns) < history_months):
+        raise ValueError(f'{history_months} months requested, but the bundled data contain {len(returns)} monthly returns.')
+    window = history_months if history_months is not None else 36 if last_36 else len(returns)
+    selected = returns[-window:]
     columns = list(zip(*selected))
     if any(stdev(column) == 0 for column in columns):
         raise ValueError('An asset has zero return variation; its correlation is undefined.')

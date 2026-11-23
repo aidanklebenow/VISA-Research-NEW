@@ -11,3 +11,7 @@ Cloned the published p2-final branch at `c721fa9` into a new course folder. The 
 - [Risk stop](cold-clone-risk-stop.png) shows the stop verdict after raising the return target to 10% in Chrome.
 
 The Windows commands are documented from Andrew’s finding. This clean browser run used macOS. The browser check exercised the return-target control and left the cost control alone.
+
+## One-page walkthrough · November 23, 2026
+
+Chrome rendered the redesigned page and confirmed that changing the return target can trigger the risk stop and that reset restores the base case. The [seven section screenshots](one-page/) show the introduction, client rules, method, result, stresses and sensitivity, decision fields, and sources. Ten model tests and the app interaction check passed. Regenerating the numerical output made no changes to the saved JSON.

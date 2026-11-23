@@ -8,7 +8,7 @@ Annual investor cost is subtracted once from the estimated gross return. The sea
 
 The snapshot is dated October 30, 2026. Prices end September 30 and were retrieved October 22. The bundled data and source records are listed in the [data card](data-card.md) and [price source file](../data/price-sources.json). The October 29 CPI vintage is first eligible October 30. The CPI monitor leaves the weights unchanged.
 
-Eight model tests cover the known portfolio, a breached risk ceiling, infeasibility, annual cost arithmetic, vintage timing, missing or empty source evidence, empty CPI, and the sensitivity grid. The automated app check verifies all five tabs, the default result, and both stop messages. [Executed results](../output/results.json) include estimate, lookback, cost, reserve, and risk stresses and the centered two-input grid.
+Ten model tests cover the known portfolio, a breached risk ceiling, infeasibility, annual cost arithmetic, vintage timing, missing or empty source evidence, empty CPI, the sensitivity grid, explicit history windows, and fund limits. The automated app check verifies the one-page layout, the default result, dollar displays, trading cost separation, stop messages, and reset. The base results and six existing stress cases reproduce without changing the committed JSON. [Executed results](../output/results.json) include estimate, lookback, cost, reserve, and risk stresses and the centered two-input grid.
 
 ## Material AI contributions
 

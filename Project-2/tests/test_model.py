@@ -65,6 +65,24 @@ class ModelTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'vintage is empty'):
                 cpi_signal()
 
+    def test_explicit_history_matches_legacy_paths(self):
+        self.assertEqual(run(history_months=60), run())
+        self.assertEqual(run(history_months=36), run(last_36=True))
+        with self.assertRaisesRegex(ValueError, 'bundled data contain 60'):
+            run(history_months=120)
+
+    def test_exclusions_caps_and_stock_adjustments(self):
+        result = run(fund_limits={'VXUS': 0, 'SGOV': .50}, vxus_shift=.02)
+        expected = run()['estimates']['vehicles'][-1][1]
+        self.assertAlmostEqual(result['estimates']['vehicles'][-1][1], expected + .02)
+        self.assertTrue(result['feasible'])
+        for row in result['portfolios']:
+            self.assertEqual(row['weights'][-1], 0)
+        candidate = result['portfolios'][-1]
+        self.assertLessEqual(candidate['weights'][0], .50)
+        self.assertTrue(candidate['rules']['Fund maximums and exclusions respected'])
+        self.assertFalse(run(fund_limits={'SGOV': 0})['feasible'])
+
 
 if __name__ == '__main__':
     unittest.main()
