@@ -1,10 +1,20 @@
-[theme]
-base = "light"
-primaryColor = "#086F63"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F0F6F5"
-textColor = "#152D36"
-font = "sans serif"
-
 [client]
 toolbarMode = "minimal"
+
+[theme]
+base = "light"
+font = "Inter, sans-serif"
+
+[theme.light]
+primaryColor = "#235b9e"
+backgroundColor = "#f4f7fb"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#172c4b"
+borderColor = "#d3deeb"
+
+[theme.dark]
+primaryColor = "#86c5ed"
+backgroundColor = "#0c1423"
+secondaryBackgroundColor = "#121e30"
+textColor = "#e8effb"
+borderColor = "#334869"

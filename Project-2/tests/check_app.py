@@ -4,20 +4,31 @@ from streamlit.testing.v1 import AppTest
 
 app = AppTest.from_file(str(Path(__file__).resolve().parents[1] / 'app.py')).run(timeout=60)
 assert not app.exception, app.exception
-assert [heading.value for heading in app.header if heading.value != 'Inputs'] == [
-    'The client and the rules', 'How it works', 'The result', 'What could go wrong', 'The decision']
-assert [metric.value for metric in app.metric[:3]] == ['7.50%', '6.80%', 'PASS']
-assert any('$55,000.00' in str(table.value) for table in app.table)
+sections = [heading.value for heading in app.header if heading.value != 'Model Inputs']
+assert sections == [
+    'Bottom Line', 'Key Numbers', 'Recommended Allocation', 'Methodology',
+    'Risk & Stress Testing', 'Sensitivity Analysis', 'Client Mandate',
+    'Investment Committee Recommendation', 'Data Sources & Notes',
+]
+assert [metric.value for metric in app.metric[:3]] == ['7.5%', '6.8%', '5 of 5 Passed']
+assert len(app.get('plotly_chart')) == 2
+assert not app.toggle(key='dark_mode').value
+
+app.toggle(key='dark_mode').set_value(True).run(timeout=60)
+assert not app.exception, app.exception
+assert app.toggle(key='dark_mode').value
+assert len(app.get('plotly_chart')) == 2
+assert app.metric[0].value == '7.5%'
+app.toggle(key='dark_mode').set_value(False).run(timeout=60)
+assert not app.exception, app.exception
 
 app.number_input(key='portfolio_size').set_value(200_000).run(timeout=60)
 assert not app.exception, app.exception
-assert any('$110,000.00' in str(table.value) for table in app.table)
-
+assert any('$200,000' in html.proto.body for html in app.get('html'))
 app.number_input(key='trading_cost').set_value(1.).run(timeout=60)
 assert not app.exception, app.exception
-assert app.metric[0].value == '7.50%'
-assert any('One-time trading charge on the initial investment: $2,000.00' in caption.value
-           for caption in app.caption)
+assert app.metric[0].value == '7.5%'
+assert any('One-time trading charge: $2,000' in caption.value for caption in app.caption)
 
 app.slider(key='reserve').set_value(100).run(timeout=60)
 assert not app.exception, app.exception
@@ -25,18 +36,27 @@ assert any('No grid portfolio' in item.value for item in app.error)
 app.slider(key='reserve').set_value(10).run(timeout=60)
 app.slider(key='limit').set_value(5).run(timeout=60)
 assert not app.exception, app.exception
-assert app.metric[2].value == 'FAIL'
-assert any('exceeds the risk limit' in item.value for item in app.error)
+assert app.metric[2].value == '4 of 5 Passed'
+assert any('exceeds the volatility limit' in item.value for item in app.warning)
 
 assert app.selectbox(key='history').options == ['36', '60']
-assert any('contains 60 months of returns' in caption.value for caption in app.caption)
 app.selectbox(key='history').set_value(36).run(timeout=60)
 assert not app.exception, app.exception
-assert app.metric[0].value == '7.58%'
+assert app.metric[0].value == '7.6%'
 app.button[0].click().run(timeout=60)
 assert not app.exception, app.exception
 assert app.selectbox(key='history').value == 60
 assert app.number_input(key='portfolio_size').value == 100_000
+assert app.number_input(key='target').value == 7.5
+assert app.slider(key='limit').value == 10
+assert app.slider(key='reserve').value == 10
 assert app.number_input(key='annual_cost').value == 0.
-assert app.metric[2].value == 'PASS'
-print('PASS: one-page app, dollar outputs, separate trading costs, stop conditions and reset.')
+assert app.number_input(key='trading_cost').value == 0.
+assert app.slider(key='VTI_shift').value == 0.
+assert app.slider(key='VXUS_shift').value == 0.
+for ticker in ('SGOV', 'IEF', 'LQD', 'VTI', 'VXUS'):
+    assert app.checkbox(key=f'{ticker}_included').value
+    assert app.number_input(key=f'{ticker}_maximum').value == 100
+assert not any('You are viewing a modified case' in html.proto.body for html in app.get('html'))
+assert app.metric[2].value == '5 of 5 Passed'
+print('PASS: report, both themes, dollar outputs, risk stops, supported lookbacks and original-input reset.')
