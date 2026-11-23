@@ -18,11 +18,14 @@ class Settings:
     volatility_limit: float = .10  # Proposed research limit; not client approved.
 
 
+# REQ[P2-04]: Date-gated inflation signal | Rubric: Data integrity and traceability | Evidence: test_vintage_gate_and_same_vintage_calculation
 def cpi_signal(as_of=AS_OF):
     if date.fromisoformat(as_of) < date(2026, 10, 30):
         raise ValueError('This vintage is eligible only from October 30, 2026; obtain an earlier vintage.')
     with (ROOT / 'data/cpi-vintage-2026-10-29.csv').open() as f:
         values = {r['date']: float(r['value']) for r in csv.DictReader(f)}
+    if not values:
+        raise ValueError('The CPI vintage is empty.')
     end = max(values)
     prior = f'{int(end[:4])-1}{end[4:]}'
     return dict(measured=end, vintage='2026-10-29', eligible='2026-10-30',
@@ -54,6 +57,10 @@ def run(settings=Settings(), last_36=False, vti_shift=0):
     if not (0 <= settings.reserve <= 1 and 0 <= settings.annual_cost <= 1
             and 0 < settings.volatility_limit <= 1 and 0 <= settings.target <= 1):
         raise ValueError('Invalid mandate or cost settings.')
+    for filename in ('price-sources.json', 'macro-download-manifest.json'):
+        source = ROOT / 'data' / filename
+        if not json.loads(source.read_text(encoding='utf-8')):
+            raise ValueError(f'Empty source record: {filename}')
     estimates = p.estimate_from_csv(ROOT / 'data/prices.csv', last_36=last_36)
     estimates['vehicles'] = [(n, r + (vti_shift if n == 'VTI' else 0), s)
                              for n, r, s in estimates['vehicles']]
@@ -69,6 +76,7 @@ def run(settings=Settings(), last_36=False, vti_shift=0):
                 status='RESEARCH ONLY — not approved for client allocation')
 
 
+# REQ[P2-05]: Stress estimates, window, costs and rules | Rubric: Validation, sensitivity, and reproducibility | Evidence: output/results.json
 def stress_suite():
     scenarios = [('Base', Settings(), False, 0),
                  ('VTI estimate lower by 1 percentage point', Settings(), False, -.01),
@@ -86,6 +94,27 @@ def stress_suite():
     return rows
 
 
+# REQ[P2-09]: Centered sensitivity grid | Rubric: Validation, sensitivity, and reproducibility | Evidence: test_sensitivity_grid_center_and_invalid_cells
+def sensitivity_grid():
+    """Compare return targets and risk ceilings around the published settings."""
+    cases = []
+    for target in (.05, Settings.target, .15):
+        # A ceiling affects the verdict only, so one search suffices per target.
+        result = run(Settings(target=target))
+        candidate = next((row for row in result['portfolios'] if row['name'] == 'Constrained portfolio'), None)
+        volatility = candidate['volatility'] if candidate else None
+        cases.append({
+            'target': target,
+            'cells': [
+                {'limit': limit, 'volatility': volatility,
+                 'verdict': ('No mix' if volatility is None else
+                             'Above limit' if volatility > limit + 1e-12 else 'Pass')}
+                for limit in (.05, Settings.volatility_limit, .15)
+            ],
+        })
+    return cases
+
+
 def research_prompt(question, snapshot):
     return ('Educational investment research. Separate facts, calculations and suggestions. '
             'Cite dated primary sources. Do not invent holdings or recommend a trade. '
@@ -101,7 +130,7 @@ def research_prompt(question, snapshot):
 
 
 if __name__ == '__main__':
-    artifact = dict(base=run(), stresses=stress_suite())
+    artifact = dict(base=run(), stresses=stress_suite(), sensitivity=sensitivity_grid())
     target = ROOT / 'output/results.json'
     target.parent.mkdir(exist_ok=True)
     target.write_text(json.dumps(artifact, indent=2)+'\n')

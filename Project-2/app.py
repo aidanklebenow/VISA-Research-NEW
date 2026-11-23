@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import streamlit as st
 
-from model import ROOT, Settings, research_prompt, run, stress_suite
+from model import ROOT, Settings, research_prompt, run, sensitivity_grid, stress_suite
 
 st.set_page_config(page_title='Portfolio Trust | Project 2', layout='wide')
 st.title('Portfolio Trust')
@@ -99,6 +99,24 @@ with risk:
             if case['result']:
                 weights = ', '.join(f'{name} {weight:.0%}' for name, weight in zip(snapshot['tickers'], case['result']['weights']))
                 st.write(f"{case['scenario']} · {weights}")
+
+    st.subheader('What if two settings change together?')
+    st.write('A sensitivity grid shows how the result changes when two settings move. The published base case is in the center.')
+    @st.cache_data
+    def fixed_grid():
+        return sensitivity_grid()
+
+    grid = []
+    for case in fixed_grid():
+        row = {'Return target': f"{case['target']:.1%}"}
+        for cell in case['cells']:
+            heading = f"{cell['limit']:.0%} risk limit"
+            value = cell['volatility']
+            row[heading] = cell['verdict'] if value is None else f"{cell['verdict']} · {value:.2%}"
+        grid.append(row)
+    st.dataframe(pd.DataFrame(grid), hide_index=True, width='stretch')
+    with st.expander('Facts behind this'):
+        st.write('“No mix” means no tested allocation meets the return and reserve requirements. “Above limit” means the least volatile mix that meets those requirements still breaks the risk limit. A higher return target can force more stock exposure. A lower risk limit can reject a mix without changing its weights.')
 
 with data:
     st.subheader('Historical prices and inflation')
