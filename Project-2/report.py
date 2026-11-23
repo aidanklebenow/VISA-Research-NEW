@@ -99,7 +99,7 @@ def style(dark):
 
 [data-testid="stMetricValue"] {{color:var(--pt-ink);}}
 [class*="st-key-number-card-"] [data-testid="stMetricValue"],
-[class*="st-key-number-card-"] [data-testid="stMetricValue"] div {{
+[class*="st-key-number-card-"] [data-testid="stMetricValue"] :is(div,p) {{
   white-space:normal; overflow:visible; overflow-wrap:anywhere; text-overflow:clip;
   font-size:clamp(1.35rem, 2.6vw, 2.25rem); line-height:1.15;
 }}
