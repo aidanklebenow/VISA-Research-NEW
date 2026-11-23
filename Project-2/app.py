@@ -103,8 +103,8 @@ with title:
     st.title('Portfolio Trust: Allocation Recommendation')
     st.caption(f"Built by Aidan Klebenow · Purdue University · Run date {date.today():%b %d, %Y}")
 with switch:
-    mode_label = 'Dark Mode' if st.session_state.get('dark_mode', False) else 'Light Mode'
-    dark = st.toggle(mode_label, key='dark_mode', help='Switch the report and charts between light and dark.')
+    mode_label = 'Dark Mode' if st.session_state.get('dark_mode', True) else 'Light Mode'
+    dark = st.toggle(mode_label, value=True, key='dark_mode', help='Switch the report and charts between light and dark.')
 report.style(dark)
 
 changed = []

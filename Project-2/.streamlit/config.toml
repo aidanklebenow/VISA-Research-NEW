@@ -2,7 +2,7 @@
 toolbarMode = "minimal"
 
 [theme]
-base = "light"
+base = "dark"
 font = "sans-serif"
 
 [theme.light]

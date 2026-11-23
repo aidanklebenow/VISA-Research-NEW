@@ -16,18 +16,18 @@ assert any('**Original Inputs**' in item.value and '7.5% return target' in item.
            and 'All five funds · no caps' in item.value for item in app.markdown)
 assert not any('active target is 7.5%' in item.value for item in app.caption)
 assert any('$0 (no loss in a 2-SD year)' in item.proto.body for item in app.get('html'))
-assert not app.toggle(key='dark_mode').value
-assert app.toggle(key='dark_mode').label == 'Light Mode'
-
-app.toggle(key='dark_mode').set_value(True).run(timeout=60)
-assert not app.exception, app.exception
 assert app.toggle(key='dark_mode').value
 assert app.toggle(key='dark_mode').label == 'Dark Mode'
-assert len(app.get('plotly_chart')) == 2
-assert app.metric[0].value == '7.5%'
+
 app.toggle(key='dark_mode').set_value(False).run(timeout=60)
 assert not app.exception, app.exception
+assert not app.toggle(key='dark_mode').value
 assert app.toggle(key='dark_mode').label == 'Light Mode'
+assert len(app.get('plotly_chart')) == 2
+assert app.metric[0].value == '7.5%'
+app.toggle(key='dark_mode').set_value(True).run(timeout=60)
+assert not app.exception, app.exception
+assert app.toggle(key='dark_mode').label == 'Dark Mode'
 
 app.number_input(key='portfolio_size').set_value(200_000).run(timeout=60)
 assert not app.exception, app.exception
