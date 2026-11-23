@@ -12,7 +12,7 @@
 | P2-06 | Locked changed-input evidence | [Validation record](validation-and-ai-use.md) | Aidan’s prediction commit, run and diagnosis | No |
 | P2-07 | Recommendation, allocation range, monitoring and reversal rule | [Committee memo](decision-memo.md) | Aidan’s decision | No |
 | P2-08 | AI disclosure, ownership and education opening | [README](../README.md), [memo](decision-memo.md), [recording outline](video-plan.md) | Written disclosures present. Aidan confirms ownership and records openings. | No |
-| P2-09 | Centered sensitivity grid and invalid cells | [model.py:124](../model.py#L124) | Center, above-limit and no-mix regression test | Yes |
-| P2-10 | Failure validation and reproducible output | [Tests](../tests/), [verification](../output/verification.txt) | Known answer, injected source failures and app stop checks | Yes |
+| P2-09 | Sensitivity grid and invalid cells | [Live report](../report.py), [archived grid](../model.py#L124) | Original goal/limit match, over-limit and no-mix regression checks | Yes |
+| P2-10 | Failure validation and reproducible output | [Tests](../tests/), [verification](../output/verification.txt) | Known answer, injected source failures, cap shortfall, app stop checks and reset | Yes |
 | P2-11 | Corrected AI finding and comparator policy | [Correction log](where-i-caught-the-ai.md), [comparator policy](comparator-policy.md) | Andrew’s Windows finding and two comparison methods | Yes |
 | P2-12 | Videos, transcripts and frozen bundle | [Manifest](manifest.md) | Three recordings and corrected transcripts | No |
