@@ -1,0 +1,62 @@
+[00:02] Hello, this is video two, a walkthrough of the code and how I validated it. Same, same disclosures. OpenAI Codex helped
+[00:11] me with the code. Claude helped review my wording and I verified everything.
+[00:16] And this is educational, not investment advice. This is my GitHub repository right here. And I just want to say too,
+[00:25] my computer is quite old and I have a lot of, uh, the tabs open so it might be a little slow. So please, uh, bear with me.
+[00:38] Yeah, the README explains how to run it, um, with a step for both Mac and Windows.
+[00:43] Anyone can clone this and, um, install from requirements.txt and launch it. My partner Andrew tested
+[00:51] it on Windows and he found a bug which is now fixed, thankfully. So, thank God he had Windows to test it.
+[01:01] And then the data flows—the data flow starts here. The app uses,
+[01:08] um, you know, monthly adjusted prices for five ETFs, um, SGOV,
+[01:17] LQ—LQD, VTI, and VXUS from September 2021 through September 2026. That is 60
+[01:26] monthly returns, and the data card documents, um, the sources and as-of dates.
+[01:40] Okay. So, step one is in portfolio.py. Line 210 turns each month's—turns each
+[01:49] month's, month, month's prices into a return. And line 221
+[01:57] um, averages those returns and multiplies by 12 to get a yearly return and scales these swings to a yearly volatility.
+[02:06] Line 223 measures how the funds all move together and VTI comes out around 13% a year, while SGOV is around 3.7%.
+[02:24] So for our step two, um, is the core of the app. Um, the lowest-risk mix, uh,
+[02:33] function, um, line 162 loops through every way to split, um, the money in 5%,
+[02:42] uh, which is, sorry, in 5% steps, which is 10,626
+[02:49] combinations. Quite a lot. Um, line 165 throws out any mix that misses the
+[02:58] return target or doesn't hold enough SGOV, and line 168 keeps the one with the lowest volatility.
+[03:12] Then the evaluate function in model.py checks the chosen mix against each rule.
+[03:20] Um, fully invested, return target, SGOV reserve, the volatility limits, and the
+[03:27] fund caps. If any rule, if any rule, like, fails, the app still shows, uh, the mix
+[03:36] marked, um, you know, capital, um, F-A-I-L for failed. So the committee,
+[03:46] um, they see the trade-off instead of a blank screen.
+[03:52] And for tab one here is, uh, the search visualized. Every
+[03:59] dot is one tested, like, mix. The diamond is the one, um, the, that
+[04:08] the model chose, which is 55% SGOV, 30% VTI, 15%
+[04:16] VXUS at, um, at a 7.5% return and a 6.8%
+[04:23] volatility, which I think is pretty good.
+[04:33] For validation, there are 12 automated tests. Um, a few examples. Line 11 checks a
+[04:40] known answer. Line 19 makes sure a risk failure is never hidden. Line 24 makes
+[04:48] sure the app, the app never invents a portfolio when none is possible. And line 50
+[04:57] checks that missing or bad data stops the model. So all 12 tests have passed and a fresh clone reproduces the saved results exactly.
+[05:22] Okay.
+[05:25] Um, here is, here's, um, that failure case live. Uh, if I set an impossible goal like 50% a year, the app says plainly
+[05:35] that there is no portfolio that meets the rules. Um,
+[05:41] which is pretty nice. And then for my sensitivity analysis,
+[05:49] or sorry, um, my risk, um, um, uh, and stress analysis,
+[05:57] the highest-risk claim is that this mix reliably reaches, um, reaches 7.5%.
+[06:06] So I stress-tested it. If the U.S. stock return, returns come in one point lower,
+[06:14] um, the model, uh, will shift to more towards the U.S., um,
+[06:21] these stocks, um, um, and still passes at, um, a 7.2%
+[06:28] volatility. But with a 5% risk limit, it fails.
+[06:35] The sensitivity grid shows why, um, you can't reach, um, a 7.5% with less than
+[06:43] about 6.8% volatility. That's a hard floor on the client's risk tolerance.
+[06:53] And then last, my locked prediction. Um, I wrote my prediction with AI closed and committed it to GitHub before the running, before running anything. And
+[07:02] here's that, uh, here's that commit and here's my results commit afterwards.
+[07:13] I raised the minimum cash reserve in SGOV from 10, from 10% to 60% and I
+[07:21] predicted that the mix would, um, would fail, uh, the 7.5%
+[07:28] return, uh, goal, with return dropping to about 7% and volatility to about 6%.
+[07:37] And then for the results, what actually happened was the app found—the app, um, did not find a portfolio at all that
+[07:44] meets every single rule. And I was right, uh, that 7% is that, um, uh, that
+[07:52] 7.5% becomes impossible. But I expected a, um, you know, like, a failing mix rather than,
+[08:00] rather than none. Uh, with 60% earning about 3.7% in T-bills, the other 40%
+[08:09] would need a 13.2% a year and even VTI's, um, you know, um, 13.1%
+[08:19] um, just falls pretty short. Um, the decision effect is that my recommendation
+[08:26] stands because 50, 55% SGOV, uh, that still reaches, like, 7.5%
+[08:35] and a client wanting 60% in cash would need a lower return goal.
+[08:48] So that's the full pipeline. Uh, I try to do my best explaining the, like, our data and everything, but data estimates, uh, the
+[08:58] search, rule checks, stress tests, and a locked prediction, all reproducible from this, from this repo.
+[09:09] Thank you for your time.

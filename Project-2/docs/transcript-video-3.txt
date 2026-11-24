@@ -1,0 +1,48 @@
+[00:00] Good evening. My name is Aidan Klebenow.
+[00:03] I am presenting my allocation recommendation for Portfolio Trust. Disclosures. This app
+[00:11] was, uh, built with OpenAI Codex, and I used Claude to review my wording. I made and verified every, um, um, decision, and
+[00:20] this is an educational analysis, not investment advice. And just to showcase,
+[00:26] I can reset my original, uh, inputs right here. So everything goes back to how it should be.
+[00:36] And the key numbers, so the key numbers is, um, is, like, a 7.5% expected return, right? The client's
+[00:44] goal, which is 6.8% volatility under the 10, 10% limit, and it passes all five rule checks.
+[01:04] Here are the rules I set. My, my benchmark is, uh, a standard 60/40
+[01:10] portfolio, 60% VTI and 40% IEF, rebalanced annually, because it's the
+[01:18] institutional yardstick for a steady five-year growth.
+[01:25] And then
+[01:34] against that, uh, benchmark, the 60/40 portfolio is estimated at 7.2% a year with 11.5% volatility.
+[01:44] My mix earns 7.5% with 6.8% volatility.
+[01:50] So more return with about 40% less risk.
+[02:07] My risk limit is 10% annual volatility.
+[02:11] I dropped that original zero-loss rule because any portfolio with stocks can have a down year, obviously. So instead I
+[02:20] require at least 10% in, uh, SGOV. So withdrawals never force us to sell stocks at a loss.
+[02:29] And then for, uh, for the 7% single-issuer cap, I look through the
+[02:38] funds to the actual companies. Um, a 30, a 30% VTI position only puts about 2% in any
+[02:47] one company like Apple. So it passes easily. U.S. Treasuries are exempt as
+[02:55] government, uh, debt. For withdrawals, I'm assuming 4% a year,
+[03:03] um, which is $4,000 taken quarterly. The 10% minimum reserve alone covers two and
+[03:10] a half years and the actual mix holds five—$55,000,
+[03:16] uh, dollars in SGOV, over 13 years of withdrawals without selling a single share of stock.
+[03:31] I'm recommending ranges, not exact, uh, numbers. SGOV, 50 to, 50 to 65%,
+[03:40] uh, VTI 25 to 45%, VXUS up to 15%,
+[03:47] and IEF and LQD up to 10% each. My stress tests show the best mix shifts when
+[03:55] assumptions change. So one exact number won't be a false precision. As this table shows, every fund of my mix falls
+[04:04] inside its range, which is very nice.
+[04:15] There are two risks I want the committee to weigh. Um, first, lookback bias.
+[04:21] My 60-month window caught an unusually, unusually strong run for U.S. stocks, about 13% a year for VTI, which likely overstates future returns.
+[04:36] You can see how sensitive this is. Using only 36 months moves SGOV from 55% to 80%.
+[04:47] Second, return, um, compression. If stock returns, if,
+[04:56] if stock returns or T-bill yields drop, the mix can miss
+[05:06] 7.5%, um, without breaking the risk limit.
+[05:13] And now for the sensitivity analysis. Um,
+[05:19] the limit I, um, the limit I defend the hardest is a 10% volatility
+[05:28] ceiling. This grid shows that at a 7.5% goal, anything about 7% risk fails. Um,
+[05:37] if the client turns out to be more conservative than that, the honest answer is to lower the return goal and
+[05:44] not to pretend the mix is safer than it is, 'cause that never helps in investment advice, especially for a portfolio
+[05:52] when you're allocating your client's money. And here's what would make me reverse this.
+[06:00] Um, if the portfolio 60-day realized volatility goes above 10% or if it fails,
+[06:08] sorry, or, or if it falls 8% from its peak, I trim VTI back to 25%,
+[06:16] um, and move the money into SGOV. And if withdrawals ever push SGOV below 10%, I
+[06:23] pause stock purchases until the reserve is restored.
+[06:36] Committee ask. So, here's what I'm asking the committee to approve. Um, a $100,000 investment
+[06:46] within these ranges. We'll compare it against the 60/40, uh, benchmark and
+[06:53] review it every few months. Thank you for your time and have a great rest of your day.

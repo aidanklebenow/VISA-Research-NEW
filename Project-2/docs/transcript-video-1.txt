@@ -1,0 +1,40 @@
+[00:01] Hi, I'm Aidan Klebenow, a senior in finance and a student at Purdue University. I just want to let you guys know I have a
+[00:09] speech impediment. So, if I quit talking for a little bit or like I stammer, I'm just trying to collect my thoughts. So,
+[00:17] this is video one of my FIN 439 Project 2 on how my thinking changed
+[00:24] while building this app. Um, quick, um, disclosures too. I used OpenAI Codex
+[00:31] for the code and Claude to review my wording and planning, and every, every, um, decision and number here I checked
+[00:39] myself. This is an educational analysis and this is not investment advice. And
+[00:45] the question I set out to answer is, if a client has $100,000 for five years and
+[00:53] wants about 7.5% a year of return and needs cash available, what's the lowest, lowest
+[01:01] risky way to split that money across five ETFs?
+[01:06] [Clears throat.]
+[01:11] Where I started is I assumed the answer would be a classic balanced mix, like a balanced mix, um, like of stocks and bonds.
+[01:20] Um, what actually happened is the model put zero in both bond funds, IEF and LQD,
+[01:29] [clears throat] which is quite interesting.
+[01:34] And then when I dug into why, um, both lost, like, um, money over this, uh, from
+[01:41] 2021 to 2026 window. IEF is about negative 1.8% a year and LQD is about negative 0.8%.
+[01:52] Um, rising rates in 2022 hit bonds hard and so the model
+[02:00] used Treasury bills, um, SGOV, um, for safety, uh, and stocks for growth. That
+[02:08] changed how I think about, you know, how safe, uh, an asset is, and a Treasury bond isn't automatically safe when rates move.
+[02:19] Now we're going to—so the second big change came from
+[02:28] checking the model instead of trusting it. When I used only the last, the last 36, like, months, the app said I could
+[02:37] hold 80% in T-bills and still earn, um, a 7.6% with only 2.3%
+[02:44] volatility. That looked too good, I think. So, uh, T-bills earn under 4%.
+[02:51] So, these stocks would need to return over 20% a year to make that work. And, um, the 36-month window left out the
+[03:00] 2022 selloff. So, it made the portfolio look safer than it actually was. And
+[03:06] that's why I kept, um, the 60 months as my base case. And it's now one of my key risks, I would say.
+[03:16] But I also caught several problems in what the AI built. The first allocation, uh,
+[03:24] chart had, like, a negative dollar axis, which does not make sense, uh, for money, obviously, 'cause you can't have, you know,
+[03:33] less than, like, zero dollars. Um, and the fund caps were labeled so it looked like 100% was in every single, like, a
+[03:42] fund and it just—the app didn't really look that great. I had to revise it multiple times. Uh, the card labels were
+[03:49] cut off. One sidebar box was empty and the intro just read very, like, generic.
+[03:56] Um, so I had to write that myself and revise a lot of the wording. Um, my lab
+[04:03] partner Andrew also found that, um, in that, um, in, like, my setup instructions, um,
+[04:10] it failed on Windows and that was fixed in the README now. So, 'cause I use, like, an Apple MacBook. So, that was good to
+[04:20] know. [Clears throat.] So what came from where? Um, the
+[04:28] framework, the, like, meaning, um, of the, like, of the, like, a mandate,
+[04:36] stress, like, a test, um, and the locked prediction came from the course, and the
+[04:42] benchmark, risk limits, issuer rule, withdrawals, and recommendations are all
+[04:50] my, uh, decisions. The peer check came from Andrew, of course, and the code was AI-assisted, and I verified all the
+[04:57] outputs. And in video two I will walk through the code and how I tested it.
+[05:02] And in video three I will make my case to the investment committee. Thank you for your time.
