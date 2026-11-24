@@ -234,7 +234,7 @@ with st.container(border=True):
             ], label='Recommended allocation')
             st.caption(f'One-time trading charge: {report.dollars(size * trading_cost / 100)} on the starting investment. Annual return excludes this separate charge.')
         with st.expander('Numerical Rule Details'):
-            report.table(['Rule', 'Result'], [(rule, 'Pass' if passed else 'Fail') for rule, passed in checks.items()],
+            report.table(['Rule', 'Result'], [(rule.replace('proposed limit', 'active limit'), 'Pass' if passed else 'Fail') for rule, passed in checks.items()],
                          classes={(i, 1): 'pass' if passed else 'fail' for i, passed in enumerate(checks.values())})
     else:
         st.write('An allocation appears when a mix meets the return, cash reserve and fund limits.')

@@ -15,7 +15,7 @@ class Settings:
     target: float = .075
     reserve: float = .10
     annual_cost: float = 0
-    volatility_limit: float = .10  # Proposed research limit; not client approved.
+    volatility_limit: float = .10  # Aidan’s policy limit for the original case.
 
 
 def available_return_months():
@@ -57,11 +57,12 @@ def evaluate(name, weights, estimates, settings, max_weights=None):
             weight <= cap + 1e-12 for weight, cap in zip(weights, max_weights))
     return dict(name=name, **result, net_return_proxy=net, rules=rules,
                 model_verdict='PASS' if all(rules.values()) else 'FAIL',
-                full_mandate_verdict='FAIL — mandate not established',
-                unresolved=['7% issuer rule: ETF look-through, aggregation and Treasury exception undefined',
-                            'Zero realized losses cannot be guaranteed',
-                            'Arithmetic estimate does not establish 5-year compounded net target',
-                            'Client risk limit, benchmark and withdrawal schedule not approved'])
+                full_mandate_verdict='FAIL — five-year compounded growth not established',
+                mandate_policy={'issuer_rule': '7% look-through cap on corporate holdings; U.S. Treasuries exempt',
+                                'liquidity_rule': 'Minimum 10% in SGOV replaces the zero-loss rule',
+                                'benchmark': '60% VTI / 40% IEF, rebalanced annually',
+                                'risk_limit': '10% annual volatility', 'withdrawals': '$4,000 per year, taken quarterly'},
+                unresolved=['The arithmetic estimate does not prove five-year compounded growth'])
 
 
 def run(settings=Settings(), last_36=False, vti_shift=0, *,
@@ -100,7 +101,7 @@ def run(settings=Settings(), last_36=False, vti_shift=0, *,
         results.append(evaluate('Constrained portfolio', best['weights'], estimates, settings, limits))
     return dict(as_of=AS_OF, settings=settings.__dict__, tickers=names, estimates=estimates,
                 portfolios=results, feasible=bool(best), signal=cpi_signal(),
-                status='RESEARCH ONLY — not approved for client allocation')
+                status='RESEARCH MODEL — committee recommendation recorded in the decision memo')
 
 
 # REQ[P2-05]: Stress estimates, window, costs and rules | Rubric: Validation, sensitivity, and reproducibility | Evidence: output/results.json
